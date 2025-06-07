@@ -273,6 +273,8 @@
         min-width: 85px;
         text-align: center;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
 
     .btn-view {
@@ -300,6 +302,29 @@
         color: white;
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+    }
+
+    /* Button Loading State */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: loading-shine 1.5s infinite;
+    }
+
+    @keyframes loading-shine {
+        0% { left: -100%; }
+        100% { left: 100%; }
     }
 
     /* Enhanced Empty State */
@@ -380,6 +405,8 @@
         color: white;
         font-weight: 600;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
 
     .btn-primary-custom:hover {
@@ -417,32 +444,11 @@
         border-left: 4px solid #17a2b8;
     }
 
-    /* Loading Animation */
-    .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255,255,255,0.9);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    }
-
-    .loading-spinner {
-        width: 50px;
-        height: 50px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid var(--primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    /* Form Loading State */
+    .form-loading {
+        opacity: 0.7;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
     }
 
     /* Responsive Design */
@@ -503,31 +509,18 @@
         }
     }
 
-    /* Remove all bottom borders */
+    /* Remove all unnecessary borders */
     .card-enhanced,
     .card-body,
-    .table-responsive,
-    .dataTables_wrapper,
-    .dataTables_info,
-    .dataTables_paginate {
+    .table-responsive {
         border-bottom: none !important;
         box-shadow: none !important;
         margin-bottom: 0 !important;
     }
 
-    .dataTables_wrapper,
-    .dataTables_wrapper *,
-    .dataTables_wrapper::before,
-    .dataTables_wrapper::after {
-        border-bottom: none !important;
-        box-shadow: none !important;
-    }
-
-    .card-body,
-    .card-body *,
-    .table-responsive,
-    .table-responsive * {
-        border-bottom: none !important;
+    /* Prevent any flash effects */
+    html, body {
+        transition: none !important;
     }
 </style>
 @endsection
@@ -663,11 +656,6 @@
     </div>
 </div>
 
-<!-- Loading Overlay -->
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner"></div>
-</div>
-
 <!-- Modal Perhitungan Baru -->
 <div class="modal fade modal-form" id="perhitunganModal" tabindex="-1" aria-labelledby="perhitunganModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -719,29 +707,47 @@
 @endsection
 
 @section('scripts')
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 $(document).ready(function() {
-    // Form submission with loading state
-    $('#formPerhitungan').on('submit', function() {
+    // Form submission dengan loading state yang smooth (tanpa overlay)
+    $('#formPerhitungan').on('submit', function(e) {
         const btn = $('#btnHitung');
+        const form = $(this);
         const originalText = btn.html();
         
+        // Loading state pada button saja
         btn.html('<i class="fas fa-spinner fa-spin me-2"></i>Menghitung...');
         btn.prop('disabled', true);
+        btn.addClass('btn-loading');
         
-        showLoading();
+        // Tambah class loading pada form
+        form.addClass('form-loading');
         
-        // Reset button after 10 seconds (fallback)
+        // Reset setelah 8 detik (fallback)
         setTimeout(function() {
             btn.html(originalText);
             btn.prop('disabled', false);
-            hideLoading();
-        }, 10000);
+            btn.removeClass('btn-loading');
+            form.removeClass('form-loading');
+        }, 8000);
     });
     
     // Auto focus on modal open
     $('#perhitunganModal').on('shown.bs.modal', function() {
         $('#nama_perhitungan').focus();
+    });
+    
+    // Prevent form double submission
+    let isSubmitting = false;
+    $('#formPerhitungan').on('submit', function(e) {
+        if (isSubmitting) {
+            e.preventDefault();
+            return false;
+        }
+        isSubmitting = true;
     });
 });
 
@@ -767,6 +773,13 @@ function confirmDelete(name) {
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
+            // Tambah loading pada button delete
+            const deleteBtn = event.target.closest('button');
+            if (deleteBtn) {
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Hapus';
+                deleteBtn.disabled = true;
+                deleteBtn.classList.add('btn-loading');
+            }
             event.target.closest('form').submit();
         }
     });
@@ -774,38 +787,71 @@ function confirmDelete(name) {
     return false;
 }
 
-// Loading functions
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-}
-
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
-}
-
-// Success notification
+// Enhanced Success notification dengan pop-up yang menarik
 @if(session('success'))
     Swal.fire({
         icon: 'success',
-        title: 'Berhasil!',
-        text: '{{ session('success') }}',
+        title: 'Perhitungan Berhasil!',
+        html: `
+            <div style="text-align: center; padding: 1rem;">
+                <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                    <h5 style="margin: 0; color: white;">{{ session('success') }}</h5>
+                </div>
+                <p style="color: #6b7280; margin: 0;">Data perhitungan telah tersimpan dan siap untuk dilihat</p>
+            </div>
+        `,
         confirmButtonColor: 'var(--primary)',
-        timer: 3000,
-        timerProgressBar: true
+        confirmButtonText: '<i class="fas fa-eye me-2"></i>Lihat Hasil',
+        showCancelButton: true,
+        cancelButtonText: 'Tutup',
+        cancelButtonColor: '#6b7280',
+        reverseButtons: true,
+        customClass: {
+            popup: 'animated bounceIn',
+            confirmButton: 'btn-success-custom',
+            cancelButton: 'btn-secondary-custom'
+        },
+        showClass: {
+            popup: 'animate__animated animate__bounceIn'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__bounceOut'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirect ke halaman hasil terbaru jika user klik "Lihat Hasil"
+            @if(isset($hasilPerhitungans) && $hasilPerhitungans->count() > 0)
+                window.location.href = "{{ route('admin.perhitungan.show', $hasilPerhitungans->last()->id ?? '#') }}";
+            @endif
+        }
     });
 @endif
 
-// Error notification
+// Enhanced Error notification dengan pop-up yang menarik
 @if(session('error'))
     Swal.fire({
         icon: 'error',
-        title: 'Error!',
-        text: '{{ session('error') }}',
-        confirmButtonColor: 'var(--primary)'
+        title: 'Terjadi Kesalahan!',
+        html: `
+            <div style="text-align: center; padding: 1rem;">
+                <div style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <h5 style="margin: 0; color: white;">{{ session('error') }}</h5>
+                </div>
+                <p style="color: #6b7280; margin: 0;">Silakan periksa data dan coba lagi</p>
+            </div>
+        `,
+        confirmButtonColor: 'var(--primary)',
+        confirmButtonText: '<i class="fas fa-redo me-2"></i>Coba Lagi',
+        customClass: {
+            popup: 'animated shakeX',
+            confirmButton: 'btn-primary-custom'
+        },
+        showClass: {
+            popup: 'animate__animated animate__shakeX'
+        }
     });
 @endif
 </script>
-
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

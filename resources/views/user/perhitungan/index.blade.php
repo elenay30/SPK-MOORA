@@ -611,7 +611,7 @@
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
             order: [
-                [2, 'desc']
+                [2, 'asc']
             ], // Sort by date descending
             drawCallback: function() {
                 // Reinitialize tooltips after table redraw

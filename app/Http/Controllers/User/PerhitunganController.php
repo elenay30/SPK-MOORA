@@ -24,7 +24,7 @@ class PerhitunganController extends Controller
     public function index()
     {
         $hasilPerhitungans = HasilPerhitungan::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
             
         return view('user.perhitungan.index', compact('hasilPerhitungans'));
