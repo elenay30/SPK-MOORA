@@ -11,17 +11,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Register global middleware
+        // DISABLE SecureHeaders - hanya middleware yang memang diperlukan
         $middleware->web(append: [
-            // Add any custom global middleware here
+            // Tidak ada global middleware tambahan
         ]);
 
-        // Register route-specific middleware
+        // Register route-specific middleware saja
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'user' => \App\Http\Middleware\UserMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Minimal exception handling saja
     })->create();

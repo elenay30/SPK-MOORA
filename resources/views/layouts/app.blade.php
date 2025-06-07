@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'SPK Karyawan Terbaik')</title>
 
     <!-- Bootstrap CSS -->
@@ -37,6 +38,17 @@
             --header-height: 80px;
         }
 
+        /* PERBAIKAN RADIKAL: Hilangkan SEMUA garis di bagian bawah viewport */
+        html {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: linear-gradient(135deg, var(--warm-gray) 0%, #f3f2f0 100%) !important;
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
         body {
             min-height: 100vh;
             display: flex;
@@ -44,6 +56,35 @@
             background: linear-gradient(135deg, var(--warm-gray) 0%, #f3f2f0 100%);
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-dark);
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden !important;
+        }
+
+        /* Hilangkan semua pseudo-element yang bisa membuat garis */
+        html::before, html::after,
+        body::before, body::after {
+            display: none !important;
+            content: none !important;
+        }
+
+        /* Override semua kemungkinan garis */
+        * {
+            border-bottom-color: transparent !important;
+            border-bottom-width: 0 !important;
+            border-bottom-style: none !important;
+        }
+
+        /* Khusus untuk container Bootstrap */
+        .container-fluid::after,
+        .row::after,
+        .col-md-9::after,
+        .col-lg-10::after {
+            display: none !important;
+            content: none !important;
         }
 
         main {
@@ -59,8 +100,8 @@
             padding: 1rem 0;
             height: var(--header-height);
             position: relative;
-            overflow: visible; /* Changed from hidden to visible */
-            z-index: 1000; /* Added z-index */
+            overflow: visible;
+            z-index: 1000;
         }
 
         .navbar::before {
@@ -124,7 +165,7 @@
         /* Enhanced Navigation Links */
         .navbar-nav {
             position: relative;
-            z-index: 1001; /* Added z-index */
+            z-index: 1001;
         }
 
         .navbar-nav .nav-link {
@@ -162,11 +203,11 @@
             left: 100%;
         }
 
-        /* SIMPLIFIED DROPDOWN - GUARANTEED TO WORK */
+        /* SIMPLIFIED DROPDOWN */
         .user-dropdown {
             position: relative;
             display: inline-block;
-            z-index: 1001; /* Added z-index */
+            z-index: 1001;
         }
 
         .user-dropdown-toggle {
@@ -212,7 +253,7 @@
 
         .user-dropdown-menu {
             position: absolute;
-            top: calc(100% + 0.5rem); /* Better positioning */
+            top: calc(100% + 0.5rem);
             right: 0;
             background: white;
             min-width: 200px;
@@ -223,8 +264,8 @@
             visibility: hidden;
             transform: translateY(-10px) scale(0.95);
             transition: all 0.3s ease;
-            z-index: 10000; /* Very high z-index */
-            border: 1px solid rgba(0, 0, 0, 0.1); /* Added border for better visibility */
+            z-index: 10000;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .user-dropdown.show .user-dropdown-menu {
@@ -291,7 +332,7 @@
                 margin-top: 1rem;
                 padding: 1rem;
                 border: 1px solid rgba(255, 255, 255, 0.1);
-                z-index: 1002; /* Added z-index for mobile */
+                z-index: 1002;
             }
 
             .user-dropdown-menu {
@@ -317,7 +358,7 @@
             }
         }
 
-        /* Rest of the existing styles remain the same */
+        /* Button styling */
         .btn-primary {
             background-color: var(--primary);
             border-color: var(--primary);
@@ -395,12 +436,167 @@
             min-height: calc(100vh - var(--header-height));
         }
 
-        /* Footer */
+        /* Footer - GARIS BAWAH DIHILANGKAN */
         footer {
             padding: 1rem 0;
-            background: white;
-            border-top: 1px solid #e5e7eb;
+            background: transparent; /* Diubah dari white menjadi transparent */
+            /* border-top: 1px solid #e5e7eb; - DIHILANGKAN */
             color: var(--text-light);
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Hilangkan semua garis yang mungkin ada di bagian bawah */
+        html, body {
+            border-bottom: none !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* Hilangkan border dari container dan elemen lainnya */
+        .container-fluid,
+        .container,
+        main,
+        .row {
+            border-bottom: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Pastikan tidak ada pseudo-element yang membuat garis */
+        *::after,
+        *::before {
+            border-bottom: none !important;
+        }
+
+        /* Khusus untuk menghilangkan garis di viewport bottom */
+        body::after {
+            display: none !important;
+        }
+
+        /* Override semua kemungkinan elemen yang bisa buat garis */
+        div, span, section, article, main, header, footer, nav, ul, li, p, h1, h2, h3, h4, h5, h6 {
+            border-bottom: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Pastikan viewport tidak ada garis */
+        @media screen {
+            html, body {
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+            }
+        }
+
+        /* Hilangkan semua border dan outline yang mungkin muncul */
+        *, *::before, *::after {
+            border-bottom: none !important;
+            outline-bottom: none !important;
+        }
+
+        /* PERBAIKAN RADIKAL: Hilangkan SEMUA garis di bagian bawah viewport */
+        html {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: linear-gradient(135deg, var(--warm-gray) 0%, #f3f2f0 100%) !important;
+            overflow-x: hidden !important;
+        }
+
+        body {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden !important;
+        }
+
+        /* Hilangkan semua pseudo-element yang bisa membuat garis */
+        html::before, html::after,
+        body::before, body::after {
+            display: none !important;
+            content: none !important;
+        }
+
+        /* Hilangkan garis dari viewport dan window */
+        :root {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Pastikan viewport tidak ada garis */
+        @media screen {
+            html, body {
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+            }
+        }
+
+        /* Khusus untuk halaman login - hilangkan semua garis */
+        .login-page,
+        .auth-page,
+        .guest-page {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Hilangkan garis dari viewport dan window */
+        html {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Hilangkan border dari semua div, section, dan container */
+        div, section, article, main, header, footer, nav {
+            border-bottom: none !important;
+            border: none !important;
+        }
+
+        /* Khusus untuk elemen yang mungkin memiliki border default */
+        .container, .container-fluid, .row, .col-*, [class*="col-"] {
+            border: none !important;
+            border-bottom: none !important;
+            outline: none !important;
+        }
+
+        /* Hilangkan semua box-shadow yang mungkin terlihat seperti garis */
+        * {
+            box-shadow: none !important;
+        }
+
+        /* Override untuk elemen yang memang butuh shadow (kecuali bottom) */
+        .card, .modal, .dropdown-menu, .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+        }
+
+        /* Pastikan tidak ada pseudo-element yang membuat garis di bottom */
+        html::after, body::after, main::after, footer::after {
+            display: none !important;
+        }
+
+        /* TAMBAHAN KHUSUS: Hilangkan garis emas/coklat yang muncul di viewport */
+        * {
+            border-bottom-color: transparent !important;
+            border-bottom-width: 0 !important;
+            border-bottom-style: none !important;
+        }
+
+        /* Override semua kemungkinan elemen yang bisa buat garis */
+        div, span, section, article, main, header, footer, nav, ul, li, p, h1, h2, h3, h4, h5, h6 {
+            border-bottom: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Khusus untuk menghilangkan garis di bagian bawah halaman */
+        .container-fluid::after,
+        .row::after,
+        .col-md-9::after,
+        .col-lg-10::after {
+            display: none !important;
+            content: none !important;
         }
 
         /* Card dashboard styling */
@@ -648,10 +844,9 @@
                             <a class="nav-link" href="{{ route('register') }}">
                                 <i class="fas fa-user-plus me-2"></i>Register
                             </a>
-                        </li>
+        </li>
                     @else
                         <li class="nav-item">
-                            <!-- SIMPLE DROPDOWN THAT WORKS -->
                             <div class="user-dropdown" id="userDropdown">
                                 <button class="user-dropdown-toggle" type="button" onclick="toggleUserDropdown()">
                                     {{ auth()->user()->name }}
@@ -834,4 +1029,4 @@
     @yield('scripts')
 </body>
 
-</html>
+</html> 

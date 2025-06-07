@@ -427,8 +427,8 @@
             <table class="table enhanced-table" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th><i class="fas fa-hashtag me-2"></i>No</th>
-                        <th><i class="fas fa-code me-2"></i>Kode</th>
+                        <th>No</th>
+                        <th>Kode</th>
                         <th><i class="fas fa-tag me-2"></i>Nama</th>
                         <th><i class="fas fa-weight-hanging me-2"></i>Bobot</th>
                         <th><i class="fas fa-chart-line me-2"></i>Jenis</th>

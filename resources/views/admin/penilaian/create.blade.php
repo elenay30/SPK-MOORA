@@ -37,8 +37,21 @@
                 <div class="mb-3">
                     <label for="nilai_{{ $kriteria->id }}" class="form-label">{{ $kriteria->kode }} - {{ $kriteria->nama }}</label>
                     
-                    @if($kriteria->subKriterias->count() > 0)
-                        <select class="form-select @error('nilai.' . $kriteria->id) is-invalid @enderror" id="nilai_{{ $kriteria->id }}" name="nilai[{{ $kriteria->id }}]" required>
+                    @if($kriteria->id == 7)
+                        {{-- Khusus Kriteria ID 7 jadi input text --}}
+                        <input type="text" 
+                               class="form-control @error('nilai.' . $kriteria->id) is-invalid @enderror" 
+                               id="nilai_{{ $kriteria->id }}" 
+                               name="nilai[{{ $kriteria->id }}]" 
+                               value="{{ old('nilai.' . $kriteria->id) }}" 
+                               placeholder="Masukkan tahun (contoh: 3 Tahun)"
+                               required>
+                    @elseif($kriteria->subKriterias->count() > 0)
+                        {{-- Kriteria dengan subkriteria pakai dropdown --}}
+                        <select class="form-select @error('nilai.' . $kriteria->id) is-invalid @enderror" 
+                                id="nilai_{{ $kriteria->id }}" 
+                                name="nilai[{{ $kriteria->id }}]" 
+                                required>
                             <option value="">-- Pilih {{ $kriteria->nama }} --</option>
                             @foreach ($kriteria->subKriterias as $subKriteria)
                                 <option value="{{ $subKriteria->nilai }}" {{ old('nilai.' . $kriteria->id) == $subKriteria->nilai ? 'selected' : '' }}>
@@ -47,7 +60,14 @@
                             @endforeach
                         </select>
                     @else
-                        <input type="number" class="form-control @error('nilai.' . $kriteria->id) is-invalid @enderror" id="nilai_{{ $kriteria->id }}" name="nilai[{{ $kriteria->id }}]" value="{{ old('nilai.' . $kriteria->id) }}" step="0.01" required>
+                        {{-- Kriteria tanpa subkriteria pakai input number --}}
+                        <input type="number" 
+                               class="form-control @error('nilai.' . $kriteria->id) is-invalid @enderror" 
+                               id="nilai_{{ $kriteria->id }}" 
+                               name="nilai[{{ $kriteria->id }}]" 
+                               value="{{ old('nilai.' . $kriteria->id) }}" 
+                               step="0.01" 
+                               required>
                     @endif
                     
                     @error('nilai.' . $kriteria->id)

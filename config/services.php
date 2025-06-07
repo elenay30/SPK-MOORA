@@ -35,8 +35,47 @@ return [
         ],
     ],
 
+    // ============================================================================
+    // reCAPTCHA Configuration (Original NoCapatcha format)
+    // ============================================================================
     'nocaptcha' => [
         'sitekey' => env('NOCAPTCHA_SITEKEY'),
         'secret' => env('NOCAPTCHA_SECRET'),
+        'options' => [
+            'timeout' => env('NOCAPTCHA_TIMEOUT', 10),
+            'language' => env('NOCAPTCHA_LANGUAGE', 'id'), // Bahasa Indonesia
+        ],
     ],
+
+    // ============================================================================
+    // reCAPTCHA Configuration (Alternative format for consistency)
+    // ============================================================================
+    'recaptcha' => [
+        'site_key' => env('NOCAPTCHA_SITEKEY'), // Menggunakan env yang sama
+        'secret_key' => env('NOCAPTCHA_SECRET'), // Menggunakan env yang sama
+        'version' => env('RECAPTCHA_VERSION', 'v2'),
+        'timeout' => env('RECAPTCHA_TIMEOUT', 10),
+        'skip_on_localhost' => env('RECAPTCHA_SKIP_LOCALHOST', true),
+        'language' => env('RECAPTCHA_LANGUAGE', 'id'),
+    ],
+
+    // ============================================================================
+    // Mail Services (untuk email verification jika dibutuhkan)
+    // ============================================================================
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
+        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+        'scheme' => 'https',
+    ],
+
+    // ============================================================================
+    // File Storage Services
+    // ============================================================================
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URL'),
+    ],
+
 ];

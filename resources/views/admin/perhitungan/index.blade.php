@@ -4,144 +4,212 @@
 
 @section('styles')
 <style>
-    .header-section {
-        background: var(--gradient);
+    /* Enhanced Page Header - CONSISTENT STYLE */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
         color: white;
-        border-radius: 10px;
-        padding: 25px;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 25px rgba(161, 98, 7, 0.15) !important;
+        position: relative;
+        overflow: hidden;
     }
     
-    .header-content h1 {
-        margin: 0 0 5px 0;
-        font-size: 1.75rem;
-        font-weight: 600;
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
     
-    .header-content p {
+    .page-header-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .page-title {
         margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+    }
+    
+    .page-subtitle {
+        margin: 0.5rem 0 0 0;
         opacity: 0.9;
-        font-size: 0.95rem;
+        font-size: 1rem;
+        font-weight: 400;
     }
-    
-    .header-button {
-        background: rgba(255,255,255,0.2);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
+
+    /* Enhanced Button Styling */
+    .btn-professional {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
         font-weight: 600;
-        transition: all 0.2s ease;
+        border: none;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
     }
     
-    .header-button:hover {
+    .btn-professional:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
         background: rgba(255,255,255,0.3);
         color: white;
-        transform: translateY(-1px);
     }
-    
-    .stats-box {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+    /* Stats Cards - Simplified */
+    .stats-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important;
+        border: 1px solid rgba(0,0,0,0.05);
+        text-align: center;
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
         border-left: 4px solid var(--orange);
     }
-    
-    .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        text-align: center;
+
+    .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(161, 98, 7, 0.15) !important;
     }
-    
-    .stat-value {
+
+    .stats-number {
         font-size: 2rem;
         font-weight: 700;
         color: var(--orange);
-        margin: 0;
-        line-height: 1;
+        margin-bottom: 0.5rem;
     }
-    
-    .stat-text {
-        color: #666;
+
+    .stats-label {
+        color: var(--text-light);
         font-weight: 500;
-        margin: 8px 0 0 0;
         font-size: 0.9rem;
     }
-    
+
+    /* Enhanced Card Styling */
+    .card-enhanced {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .card-enhanced:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(161, 98, 7, 0.15) !important;
+    }
+
+    .card-header-enhanced {
+        background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+        border-bottom: 2px solid var(--primary);
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-title-enhanced {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+    }
+
+    /* Section Title */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
     .section-title {
-        margin: 0 0 15px 0;
+        margin: 0;
         font-size: 1.2rem;
         font-weight: 600;
         color: #495057;
         display: flex;
         align-items: center;
-        justify-content: space-between;
     }
-    
-    .main-card {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-    
-    .card-title {
-        background: #f8f9fa;
-        border-bottom: 2px solid var(--orange);
-        padding: 15px 20px;
+
+    /* Enhanced Table */
+    .table-enhanced {
         margin: 0;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #495057;
-    }
-    
-    .data-table {
-        width: 100%;
-        margin: 0;
-        border-collapse: collapse;
-        background: white;
-    }
-    
-    .data-table thead th {
-        background: #f8f9fa;
-        border: 1px solid #e9ecef;
-        padding: 15px 20px;
-        font-weight: 600;
-        color: #495057;
         font-size: 0.9rem;
-        text-align: center;
-        vertical-align: middle;
-    }
-    
-    .data-table tbody td {
-        padding: 15px 20px;
-        border: 1px solid #e9ecef;
-        vertical-align: middle;
-        text-align: center;
         background: white;
+        width: 100%;
     }
-    
-    .data-table tbody tr {
-        transition: background-color 0.2s ease;
+
+    .table-enhanced thead {
+        background: #f9fafb;
+        border-bottom: 2px solid #e5e7eb;
     }
-    
-    .data-table tbody tr:hover {
-        background: #f8f9fa;
+
+    .table-enhanced thead th {
+        border: none;
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        position: relative;
+        vertical-align: middle;
+        text-align: center;
     }
-    
-    .data-table tbody tr:hover td {
-        background: #f8f9fa;
+
+    .table-enhanced tbody td {
+        padding: 1rem 1.25rem;
+        border: none;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+        transition: all 0.2s ease;
+        text-align: center;
     }
-    
+
+    .table-enhanced tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .table-enhanced tbody tr:hover {
+        background: #fafbfc;
+    }
+
+    .table-enhanced tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Row Number Badge */
     .row-number {
-        background: var(--orange);
+        background: linear-gradient(135deg, var(--orange) 0%, #e86a2c 100%);
         color: white;
         border-radius: 50%;
         width: 32px;
@@ -151,8 +219,10 @@
         justify-content: center;
         font-weight: 600;
         font-size: 0.9rem;
+        box-shadow: 0 2px 8px rgba(255, 126, 62, 0.3) !important;
     }
-    
+
+    /* Calculation Name */
     .calc-name {
         font-weight: 600;
         color: #495057;
@@ -160,37 +230,41 @@
         text-align: left;
         font-size: 1rem;
     }
-    
+
     .user-tag {
-        background: #e9ecef;
+        background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
         color: #666;
         padding: 3px 10px;
         border-radius: 12px;
         font-size: 0.8rem;
         display: inline-block;
         margin-top: 3px;
+        border: 1px solid #dee2e6;
     }
-    
+
+    /* Date Badge */
     .date-badge {
-        background: #e8f5e8;
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
         color: #2d5a2d;
         padding: 6px 12px;
         border-radius: 15px;
         font-size: 0.85rem;
         font-weight: 500;
         display: inline-block;
+        border: 1px solid #c3e6cb;
     }
-    
+
+    /* Enhanced Action Buttons */
     .action-group {
         display: flex;
         gap: 8px;
         justify-content: center;
         align-items: center;
     }
-    
+
     .action-btn {
         padding: 8px 16px;
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 0.9rem;
         font-weight: 500;
         border: none;
@@ -198,112 +272,123 @@
         display: inline-block;
         min-width: 85px;
         text-align: center;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
     }
-    
+
     .btn-view {
-        background: #17a2b8;
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
         color: white;
+        box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3) !important;
     }
-    
+
     .btn-view:hover {
-        background: #138496;
+        background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
         color: white;
         text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4) !important;
     }
-    
+
     .btn-remove {
-        background: #dc3545;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
         color: white;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3) !important;
     }
-    
+
     .btn-remove:hover {
-        background: #c82333;
+        background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
         color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
     }
-    
+
+    /* Enhanced Empty State */
     .empty-state {
         text-align: center;
         padding: 50px 30px;
         color: #999;
     }
-    
+
     .empty-state .icon {
         font-size: 3rem;
         margin-bottom: 15px;
         color: #ddd;
     }
-    
+
     .empty-state h5 {
         color: #666;
         margin-bottom: 10px;
     }
-    
+
     .empty-state p {
         margin-bottom: 20px;
     }
-    
+
+    /* Enhanced Modal */
     .modal-form .modal-content {
         border: none;
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
     }
-    
+
     .modal-form .modal-header {
-        background: var(--gradient);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
         color: white;
         border: none;
-        border-radius: 10px 10px 0 0;
+        border-radius: 15px 15px 0 0;
         padding: 20px 25px;
     }
-    
+
     .modal-form .modal-title {
         font-weight: 600;
         font-size: 1.2rem;
         margin: 0;
     }
-    
+
     .modal-form .modal-body {
         padding: 25px;
     }
-    
+
     .modal-form .modal-footer {
         border: none;
         padding: 15px 25px;
         background: #f8f9fa;
-        border-radius: 0 0 10px 10px;
+        border-radius: 0 0 15px 15px;
     }
-    
+
+    /* Enhanced Form Elements */
     .input-field {
         border: 2px solid #e9ecef;
         border-radius: 8px;
         padding: 10px 15px;
         font-size: 1rem;
         width: 100%;
-        transition: border-color 0.2s ease;
+        transition: all 0.3s ease;
     }
-    
+
     .input-field:focus {
-        border-color: var(--orange);
+        border-color: var(--primary);
         outline: none;
-        box-shadow: 0 0 0 0.2rem rgba(255, 126, 62, 0.15);
+        box-shadow: 0 0 0 0.2rem rgba(161, 98, 7, 0.15) !important;
     }
-    
+
     .btn-primary-custom {
-        background: var(--orange);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
         border: none;
         border-radius: 8px;
         padding: 10px 20px;
         color: white;
         font-weight: 600;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
     }
-    
+
     .btn-primary-custom:hover {
-        background: #e86a2c;
+        background: linear-gradient(135deg, #92400e 0%, #a16207 100%);
         color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(161, 98, 7, 0.3) !important;
     }
-    
+
     .btn-secondary-custom {
         background: #6c757d;
         border: none;
@@ -311,10 +396,17 @@
         padding: 10px 20px;
         color: white;
         font-weight: 500;
+        transition: all 0.3s ease;
     }
-    
+
+    .btn-secondary-custom:hover {
+        background: #5a6268;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+    }
+
     .info-notice {
-        background: #f8f9fa;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         border: 1px solid #e9ecef;
         border-radius: 8px;
         padding: 15px;
@@ -322,161 +414,258 @@
         display: flex;
         align-items: flex-start;
         gap: 10px;
+        border-left: 4px solid #17a2b8;
     }
-    
+
+    /* Loading Animation */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-        .header-section {
+        .page-header {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
             flex-direction: column;
             text-align: center;
-            gap: 15px;
         }
-        
-        .header-button {
+
+        .btn-professional {
             width: 100%;
+            margin-top: 1rem;
+            justify-content: center;
         }
-        
-        .stats-grid {
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        
-        .section-title {
+
+        .section-header {
             flex-direction: column;
             align-items: flex-start;
             gap: 10px;
         }
-        
-        .data-table thead th,
-        .data-table tbody td {
+
+        .table-enhanced thead th,
+        .table-enhanced tbody td {
             padding: 10px 8px;
             font-size: 0.85rem;
         }
-        
+
         .action-group {
             flex-direction: column;
             gap: 5px;
         }
-        
+
         .action-btn {
             width: 100%;
             min-width: auto;
         }
-        
+
         .calc-name {
             text-align: center;
         }
+
+        .stats-card {
+            margin-bottom: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-header-enhanced {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+    }
+
+    /* Remove all bottom borders */
+    .card-enhanced,
+    .card-body,
+    .table-responsive,
+    .dataTables_wrapper,
+    .dataTables_info,
+    .dataTables_paginate {
+        border-bottom: none !important;
+        box-shadow: none !important;
+        margin-bottom: 0 !important;
+    }
+
+    .dataTables_wrapper,
+    .dataTables_wrapper *,
+    .dataTables_wrapper::before,
+    .dataTables_wrapper::after {
+        border-bottom: none !important;
+        box-shadow: none !important;
+    }
+
+    .card-body,
+    .card-body *,
+    .table-responsive,
+    .table-responsive * {
+        border-bottom: none !important;
     }
 </style>
 @endsection
 
 @section('content')
-<!-- Header Section -->
-<div class="header-section">
-    <div class="header-content">
-        <h1><i class="fas fa-calculator me-2"></i>Perhitungan MOORA</h1>
-        <p>Sistem Pendukung Keputusan - Multi-Objective Optimization by Ratio Analysis</p>
+<!-- Enhanced Page Header - CONSISTENT STYLE -->
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <div>
+                <h1 class="page-title">
+                    <i class="fas fa-calculator me-3"></i>
+                    Perhitungan MOORA
+                </h1>
+                <p class="page-subtitle">Sistem Pendukung Keputusan - Multi-Objective Optimization by Ratio Analysis</p>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <button type="button" class="btn-professional" data-bs-toggle="modal" data-bs-target="#perhitunganModal">
+                    <i class="fas fa-plus me-2"></i>Hitung Baru
+                </button>
+            </div>
+        </div>
     </div>
-    <button type="button" class="btn header-button d-none d-md-block" data-bs-toggle="modal" data-bs-target="#perhitunganModal">
-        <i class="fas fa-plus me-2"></i>Hitung Baru
-    </button>
 </div>
 
 <!-- Stats Section -->
 @if(count($hasilPerhitungans) > 0)
-<div class="stats-box">
-    <div class="stats-grid">
-        <div>
-            <h2 class="stat-value">{{ count($hasilPerhitungans) }}</h2>
-            <p class="stat-text">Total Perhitungan</p>
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="stats-card">
+            <div class="stats-number">{{ count($hasilPerhitungans) }}</div>
+            <div class="stats-label">Total Perhitungan</div>
         </div>
-        <div>
-            <h2 class="stat-value">{{ $hasilPerhitungans->last()->created_at->setTimezone('Asia/Jakarta')->format('M Y') }}</h2>
-            <p class="stat-text">Perhitungan Terbaru</p>
+    </div>
+    <div class="col-md-6">
+        <div class="stats-card">
+            <div class="stats-number">{{ $hasilPerhitungans->last()->created_at->setTimezone('Asia/Jakarta')->format('M Y') }}</div>
+            <div class="stats-label">Perhitungan Terbaru</div>
         </div>
     </div>
 </div>
 @endif
 
-<!-- Section Title with Button -->
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Riwayat Perhitungan</h5>
+<!-- Section Header -->
+<div class="section-header">
+    <h5 class="section-title">
+        <i class="fas fa-history me-2"></i>Riwayat Perhitungan
+    </h5>
     <button type="button" class="btn btn-primary-custom d-md-none" data-bs-toggle="modal" data-bs-target="#perhitunganModal">
         <i class="fas fa-plus me-2"></i>Hitung Baru
     </button>
 </div>
 
-<!-- Main Content Card -->
-<div class="main-card">
-    <h6 class="card-title"><i class="fas fa-list me-2"></i>Daftar Perhitungan MOORA</h6>
-    
-    @if(count($hasilPerhitungans) > 0)
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th style="width: 80px; border-right: 1px solid #dee2e6;">No</th>
-                        <th style="border-right: 1px solid #dee2e6;">Nama Perhitungan</th>
-                        <th style="width: 180px; border-right: 1px solid #dee2e6;">Tanggal</th>
-                        <th style="width: 200px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        // Urutkan data dari yang lama ke yang baru (ascending) dengan indeks baru
-                        $sortedHasilPerhitungans = $hasilPerhitungans->sortBy('created_at')->values();
-                    @endphp
-                    @foreach ($sortedHasilPerhitungans as $index => $hasil)
-                    <tr>
-                        <td style="border-right: 1px solid #dee2e6;">
-                            <span class="row-number">{{ $index + 1 }}</span>
-                        </td>
-                        <td style="border-right: 1px solid #dee2e6; text-align: left;">
-                            <div class="calc-name">{{ $hasil->nama_perhitungan }}</div>
-                            <span class="user-tag">
-                                <i class="fas fa-user me-1"></i>{{ $hasil->user->name ?? 'System' }}
-                            </span>
-                        </td>
-                        <td style="border-right: 1px solid #dee2e6;">
-                            <span class="date-badge">
-                                {{ $hasil->created_at->setTimezone('Asia/Jakarta')->format('d M Y H:i') }} WIB
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-group">
-                                <a href="{{ route('admin.perhitungan.show', $hasil->id) }}" 
-                                   class="action-btn btn-view"
-                                   title="Lihat Detail">
-                                    <i class="fas fa-eye me-1"></i>Detail
-                                </a>
-                                <form action="{{ route('admin.perhitungan.destroy', $hasil->id) }}" 
-                                      method="POST" 
-                                      style="display: inline;"
-                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus hasil perhitungan ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                            class="action-btn btn-remove" 
-                                            title="Hapus">
-                                        <i class="fas fa-trash me-1"></i>Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+<!-- Enhanced Card -->
+<div class="card-enhanced">
+    <div class="card-header-enhanced">
+        <h6 class="card-title-enhanced">
+            <i class="fas fa-list me-2"></i>Daftar Perhitungan MOORA
+        </h6>
+        <div style="font-size: 0.9rem; color: var(--text-light);">
+            Total: <strong>{{ count($hasilPerhitungans) }}</strong> perhitungan
         </div>
-    @else
-        <div class="empty-state">
-            <i class="fas fa-calculator icon"></i>
-            <h5>Belum Ada Perhitungan</h5>
-            <p>Anda belum melakukan perhitungan MOORA. Klik tombol "Hitung Baru" untuk memulai.</p>
-            <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#perhitunganModal">
-                <i class="fas fa-plus me-2"></i>Mulai Perhitungan
-            </button>
-        </div>
-    @endif
+    </div>
+    <div class="card-body p-0">
+        @if(count($hasilPerhitungans) > 0)
+            <div class="table-responsive">
+                <table class="table table-enhanced">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">No</th>
+                            <th>Nama Perhitungan</th>
+                            <th style="width: 180px;">Tanggal</th>
+                            <th style="width: 200px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            // Urutkan data dari yang lama ke yang baru (ascending) dengan indeks baru
+                            $sortedHasilPerhitungans = $hasilPerhitungans->sortBy('created_at')->values();
+                        @endphp
+                        @foreach ($sortedHasilPerhitungans as $index => $hasil)
+                        <tr>
+                            <td>
+                                <span class="row-number">{{ $index + 1 }}</span>
+                            </td>
+                            <td style="text-align: left;">
+                                <div class="calc-name">{{ $hasil->nama_perhitungan }}</div>
+                                <span class="user-tag">
+                                    <i class="fas fa-user me-1"></i>{{ $hasil->user->name ?? 'System' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="date-badge">
+                                    {{ $hasil->created_at->setTimezone('Asia/Jakarta')->format('d M Y H:i') }} WIB
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-group">
+                                    <a href="{{ route('admin.perhitungan.show', $hasil->id) }}" 
+                                       class="action-btn btn-view"
+                                       title="Lihat Detail">
+                                        <i class="fas fa-eye me-1"></i>Detail
+                                    </a>
+                                    <form action="{{ route('admin.perhitungan.destroy', $hasil->id) }}" 
+                                          method="POST" 
+                                          style="display: inline;"
+                                          onsubmit="return confirmDelete('{{ $hasil->nama_perhitungan }}')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="action-btn btn-remove" 
+                                                title="Hapus">
+                                            <i class="fas fa-trash me-1"></i>Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="empty-state">
+                <i class="fas fa-calculator icon"></i>
+                <h5>Belum Ada Perhitungan</h5>
+                <p>Anda belum melakukan perhitungan MOORA. Klik tombol "Hitung Baru" untuk memulai.</p>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#perhitunganModal">
+                    <i class="fas fa-plus me-2"></i>Mulai Perhitungan
+                </button>
+            </div>
+        @endif
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
 </div>
 
 <!-- Modal Perhitungan Baru -->
@@ -540,10 +729,13 @@ $(document).ready(function() {
         btn.html('<i class="fas fa-spinner fa-spin me-2"></i>Menghitung...');
         btn.prop('disabled', true);
         
+        showLoading();
+        
         // Reset button after 10 seconds (fallback)
         setTimeout(function() {
             btn.html(originalText);
             btn.prop('disabled', false);
+            hideLoading();
         }, 10000);
     });
     
@@ -552,5 +744,68 @@ $(document).ready(function() {
         $('#nama_perhitungan').focus();
     });
 });
+
+// Enhanced delete confirmation
+function confirmDelete(name) {
+    event.preventDefault();
+    
+    Swal.fire({
+        title: 'Konfirmasi Hapus',
+        html: `
+            <p>Apakah Anda yakin ingin menghapus perhitungan:</p>
+            <div style="background: #fef2f2; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #ef4444;">
+                <strong style="color: #dc2626;">${name}</strong>
+            </div>
+            <p class="text-danger"><strong>Tindakan ini tidak dapat dibatalkan!</strong></p>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            event.target.closest('form').submit();
+        }
+    });
+    
+    return false;
+}
+
+// Loading functions
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+// Success notification
+@if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '{{ session('success') }}',
+        confirmButtonColor: 'var(--primary)',
+        timer: 3000,
+        timerProgressBar: true
+    });
+@endif
+
+// Error notification
+@if(session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: '{{ session('error') }}',
+        confirmButtonColor: 'var(--primary)'
+    });
+@endif
 </script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

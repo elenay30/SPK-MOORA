@@ -209,6 +209,12 @@
     transform: translateY(0);
 }
 
+.btn-login:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* Professional Footer */
 .login-footer {
     background: #f8fafc;
@@ -273,6 +279,43 @@
     100% { transform: rotate(360deg); }
 }
 
+/* CSRF Token Display (untuk debugging) */
+.csrf-debug {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    word-break: break-all;
+}
+
+/* Error Alert Styling */
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    color: #dc3545;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-info {
+    background: #e3f2fd;
+    color: #0277bd;
+    border: 1px solid #b3e5fc;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .login-card {
@@ -320,8 +363,45 @@
                         <p class="login-subtitle">Masuk ke akun Anda untuk melanjutkan</p>
                     </div>
                     <div class="login-body">
+
+                        {{-- Session Messages --}}
+                        @if(session('message'))
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            {{ session('message') }}
+                        </div>
+                        @endif
+
+                        @if(session('success'))
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            {{ session('success') }}
+                        </div>
+                        @endif
+
+                        @if(session('error'))
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            {{ session('error') }}
+                        </div>
+                        @endif
+
+                        {{-- Validation Errors --}}
+                        @if($errors->any())
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Terdapat kesalahan:</strong>
+                            <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
                         <form method="POST" action="{{ route('login.submit') }}" id="loginForm">
                             @csrf
+                            
                             <div class="form-group-enhanced">
                                 <label for="email" class="form-label-enhanced">
                                     <i class="fas fa-envelope"></i>
@@ -335,7 +415,8 @@
                                        required 
                                        autocomplete="email" 
                                        autofocus
-                                       placeholder="Masukkan alamat email Anda">
+                                       placeholder="Masukkan alamat email Anda"
+                                       maxlength="255">
                                 @error('email')
                                 <div class="invalid-feedback-enhanced">
                                     <i class="fas fa-exclamation-triangle me-1"></i>
@@ -355,7 +436,8 @@
                                        name="password" 
                                        required 
                                        autocomplete="current-password"
-                                       placeholder="Masukkan password Anda">
+                                       placeholder="Masukkan password Anda"
+                                       maxlength="255">
                                 @error('password')
                                 <div class="invalid-feedback-enhanced">
                                     <i class="fas fa-exclamation-triangle me-1"></i>
@@ -369,25 +451,46 @@
                                        type="checkbox" 
                                        name="remember" 
                                        id="remember" 
+                                       value="1"
                                        {{ old('remember') ? 'checked' : '' }}>
                                 <label class="form-check-label-enhanced" for="remember">
                                     <i class="fas fa-bookmark me-1"></i>
-                                    Ingat saya di perangkat ini
+                                    Ingat saya selama 30 hari
                                 </label>
                             </div>
 
+                            {{-- reCAPTCHA - PERBAIKAN UTAMA --}}
                             <div class="captcha-container">
                                 <div class="captcha-title">
                                     <i class="fas fa-shield-alt"></i>
                                     Verifikasi Keamanan
                                 </div>
-                                {!! NoCaptcha::display() !!}
-                                @if ($errors->has('g-recaptcha-response'))
+                                 
+
+                                {{-- CAPTCHA Widget --}}
+                                @if(config('services.nocaptcha.sitekey'))
+                                    @if(class_exists('Anhskohbo\NoCaptcha\Facades\NoCaptcha'))
+                                        {!! NoCaptcha::display(['data-callback' => 'recaptchaCallback', 'data-expired-callback' => 'recaptchaExpiredCallback']) !!}
+                                    @else
+                                        {{-- Fallback manual CAPTCHA --}}
+                                        <div class="g-recaptcha" 
+                                             data-sitekey="{{ config('services.nocaptcha.sitekey') }}"
+                                             data-callback="recaptchaCallback"
+                                             data-expired-callback="recaptchaExpiredCallback">
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="alert alert-danger">
+                                        <strong>Error:</strong> reCAPTCHA Site Key tidak dikonfigurasi!
+                                    </div>
+                                @endif
+
+                                @error('g-recaptcha-response')
                                 <div class="captcha-error">
                                     <i class="fas fa-exclamation-triangle me-1"></i>
-                                    {{ $errors->first('g-recaptcha-response') }}
+                                    {{ $message }}
                                 </div>
-                                @endif
+                                @enderror
                             </div>
 
                             <div class="d-grid mt-4">
@@ -395,6 +498,14 @@
                                     <i class="fas fa-sign-in-alt me-2"></i>
                                     Masuk ke Sistem
                                 </button>
+                            </div>
+
+                            {{-- Rate Limiting Info --}}
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-shield-alt me-1"></i>
+                                    Dilindungi oleh rate limiting dan CSRF protection
+                                </small>
                             </div>
                         </form>
                     </div>
@@ -413,34 +524,70 @@
 </div>
 
 <script>
-// Enhanced form interaction
+// Enhanced form interaction dengan CSRF protection
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('loginForm');
     const submitBtn = document.getElementById('loginBtn');
     
-    // Add loading state on form submit
-    form.addEventListener('submit', function() {
+    console.log('🔍 Login Form Debug Info:');
+    console.log('- CSRF Token:', '{{ csrf_token() }}');
+    console.log('- Site Key:', '{{ config('services.nocaptcha.sitekey') }}');
+    console.log('- NoCaptcha Available:', {{ class_exists('Anhskohbo\NoCaptcha\NoCaptcha') ? 'true' : 'false' }});
+    
+    // reCAPTCHA callback functions
+    window.recaptchaCallback = function(response) {
+        console.log('✅ reCAPTCHA verified, response length:', response.length);
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+    };
+    
+    window.recaptchaExpiredCallback = function() {
+        console.warn('⚠️ reCAPTCHA expired');
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+    };
+    
+    // Form submit handler
+    form.addEventListener('submit', function(e) {
+        console.log('📤 Form submission started');
+        
+        // Check CAPTCHA if available
+        if (typeof grecaptcha !== 'undefined') {
+            const recaptchaResponse = grecaptcha.getResponse();
+            console.log('🔐 CAPTCHA response length:', recaptchaResponse.length);
+            
+            if (!recaptchaResponse) {
+                e.preventDefault();
+                alert('Silakan selesaikan verifikasi reCAPTCHA.');
+                return false;
+            }
+        }
+        
+        // Add loading state
         submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
         submitBtn.innerHTML = '<span>Memproses...</span>';
+        
+        console.log('✅ Form submitted successfully');
     });
     
     // Enhanced form validation feedback
     const inputs = document.querySelectorAll('.form-control-enhanced');
     inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            if (this.value.trim() !== '') {
-                this.style.borderColor = 'var(--emerald)';
-                this.style.boxShadow = '0 0 0 0.2rem rgba(16, 185, 129, 0.15)';
-            }
-        });
-        
         input.addEventListener('focus', function() {
             this.style.borderColor = 'var(--primary)';
-            this.style.boxShadow = '0 0 0 0.2rem rgba(161, 98, 7, 0.15)';
+            this.style.boxShadow = '0 0 0 3px rgba(161, 98, 7, 0.1)';
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.classList.contains('is-invalid')) {
+                this.classList.remove('is-invalid');
+            }
         });
     });
 });
 </script>
 
-{!! NoCaptcha::renderJs() !!}
+{{-- reCAPTCHA Script --}}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

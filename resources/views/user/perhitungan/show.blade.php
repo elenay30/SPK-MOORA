@@ -2,186 +2,695 @@
 
 @section('title', 'Detail Perhitungan MOORA')
 
+@section('styles')
+<style>
+    /* Professional and clean styling */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 25px rgba(161, 98, 7, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .page-header-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .page-title {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+    }
+    
+    .page-subtitle {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .header-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .btn-professional {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border: none;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .btn-professional:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .btn-back {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .btn-back:hover {
+        background: rgba(255,255,255,0.25);
+        color: white;
+    }
+    
+    .btn-print {
+        background: white;
+        color: var(--primary);
+    }
+    
+    .btn-print:hover {
+        background: #f8f9fa;
+        color: var(--primary);
+    }
+    
+    .info-alert {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border: 1px solid rgba(161, 98, 7, 0.2);
+        color: var(--text-dark);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .calculation-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .section-header {
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    
+    .section-header.final-result {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+    
+    .section-header.step-1 {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    }
+    
+    .section-header.step-2 {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    }
+    
+    .section-header.step-3 {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    
+    .step-badge {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-right: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .table-professional {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .table-professional thead {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    }
+    
+    .table-professional thead th {
+        border: none;
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 0.85rem;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+    }
+    
+    .table-professional tbody td {
+        padding: 0.875rem 1.25rem;
+        border: none;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: center;
+        vertical-align: middle;
+        transition: all 0.2s ease;
+    }
+    
+    .table-professional tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table-professional tbody tr:hover {
+        background: linear-gradient(135deg, #fefbf6 0%, #fef7ed 100%);
+        transform: scale(1.002);
+    }
+    
+    .table-professional tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .rank-badge {
+        padding: 0.375rem 0.75rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .rank-1 { 
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+    }
+    .rank-2 { 
+        background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+        color: white;
+    }
+    .rank-3 { 
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: white;
+    }
+    .rank-other { 
+        background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+        color: #374151;
+    }
+    
+    .code-badge {
+        background: linear-gradient(135deg, var(--orange) 0%, #ea580c 100%);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 4px rgba(255, 126, 62, 0.3);
+    }
+    
+    .value-display {
+        font-family: 'SF Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        padding: 0.375rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 0.8rem;
+        border: 1px solid #e2e8f0;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    }
+    
+    .winner-row {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%) !important;
+        border-left: 4px solid #f59e0b;
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+    }
+    
+    .winner-row:hover {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%) !important;
+    }
+    
+    .conclusion-section {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border: 1px solid #86efac;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);
+        border-left: 4px solid #10b981;
+    }
+    
+    .conclusion-title {
+        color: #065f46;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .conclusion-text {
+        color: #047857;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .winner-name {
+        background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        margin: 0.75rem 0;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        display: inline-block;
+        box-shadow: 0 3px 10px rgba(6, 95, 70, 0.3);
+    }
+    
+    .star-icon {
+        color: #fbbf24;
+        margin-left: 0.5rem;
+        filter: drop-shadow(0 2px 4px rgba(251, 191, 36, 0.4));
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .header-actions {
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-professional {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .table-professional {
+            font-size: 0.8rem;
+        }
+        
+        .table-professional thead th,
+        .table-professional tbody td {
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .calculation-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-header {
+            padding: 1rem 1.25rem;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .step-badge {
+            margin-right: 0;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .table-responsive {
+            font-size: 0.75rem;
+        }
+        
+        .code-badge,
+        .value-display,
+        .rank-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.4rem;
+        }
+    }
+
+    /* Print styles */
+    @media print {
+        .page-header {
+            background: #333 !important;
+            color: black !important;
+            box-shadow: none !important;
+        }
+        
+        .btn-professional,
+        .header-actions {
+            display: none !important;
+        }
+        
+        .calculation-section {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+        }
+        
+        .section-header {
+            background: #f5f5f5 !important;
+            color: black !important;
+        }
+        
+        .table-professional tbody tr:hover {
+            background: transparent !important;
+        }
+    }
+</style>
+@endsection
+
+@section('scripts')
+<script>
+    // Print functionality with clean styling
+    function printPage() {
+        window.print();
+    }
+    
+    $(document).ready(function() {
+        // Simple hover effects
+        $('.table-professional tbody tr').hover(
+            function() {
+                $(this).find('.value-display').addClass('bg-light');
+            },
+            function() {
+                $(this).find('.value-display').removeClass('bg-light');
+            }
+        );
+        
+        // Smooth scroll to top
+        $('html, body').animate({scrollTop: 0}, 300);
+    });
+</script>
+@endsection
+
 @section('content')
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Detail Perhitungan: {{ $hasil->nama_perhitungan }}</h1>
-    <div>
-        <a href="{{ route('user.perhitungan.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Kembali
-        </a>
-        <a href="{{ route('user.perhitungan.cetak', $hasil->id) }}" target="_blank" class="btn btn-success">
-            <i class="fas fa-print"></i> Cetak
-        </a>
-    </div>
-</div>
-
-<div class="alert alert-info">
-    <i class="fas fa-info-circle"></i> Perhitungan dilakukan pada: {{ $hasil->created_at->setTimezone('Asia/Jakarta')->format('d M Y H:i') }} WIB
-</div>
-
-<!-- Matriks Keputusan -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">1. Matriks Keputusan</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Alternatif</th>
-                        @php
-                            $matriksKeputusan = $hasil->data_perhitungan['matriks_keputusan'] ?? [];
-                            $kriteriaIds = !empty($matriksKeputusan) ? array_keys(reset($matriksKeputusan)) : [];
-                        @endphp
-                        @foreach ($kriteriaIds as $kriteriaId)
-                            @php
-                                $kriteria = \App\Models\Kriteria::find($kriteriaId);
-                            @endphp
-                            <th>{{ $kriteria ? $kriteria->kode : 'Kriteria #'.$kriteriaId }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($matriksKeputusan as $alternatifId => $nilai)
-                        @php
-                            $alternatif = \App\Models\Alternatif::find($alternatifId);
-                        @endphp
-                        <tr>
-                            <td>{{ $alternatif ? $alternatif->kode : 'A'.($loop->iteration) }}</td>
-                            @foreach ($nilai as $value)
-                                <td>{{ $value }}</td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <div>
+                <h1 class="page-title">
+                    <i class="fas fa-chart-line me-3"></i>
+                    Detail Perhitungan MOORA
+                </h1>
+                <p class="page-subtitle">{{ $hasil->nama_perhitungan }}</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ route('user.perhitungan.index') }}" class="btn-professional btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Kembali
+                </a>
+                <a href="{{ route('user.perhitungan.cetak', $hasil->id) }}" target="_blank" class="btn-professional btn-print">
+                    <i class="fas fa-print me-2"></i>Cetak
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Matriks Normalisasi -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">2. Matriks Normalisasi</h6>
+<div class="info-alert">
+    <i class="fas fa-info-circle me-2"></i>
+    <strong>Perhitungan dilakukan pada:</strong> {{ $hasil->created_at->setTimezone('Asia/Jakarta')->format('d M Y H:i') }} WIB
+</div>
+
+<!-- Hasil Perangkingan Final -->
+<div class="calculation-section">
+    <div class="section-header final-result">
+        <span class="step-badge">HASIL</span>
+        <h3 class="section-title">
+            <i class="fas fa-trophy me-2"></i>Hasil Perangkingan Final
+        </h3>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Alternatif</th>
-                        @php
-                            $matriksNormalisasi = $hasil->data_perhitungan['matriks_normalisasi'] ?? [];
-                            $kriteriaIds = !empty($matriksNormalisasi) ? array_keys(reset($matriksNormalisasi)) : [];
-                        @endphp
-                        @foreach ($kriteriaIds as $kriteriaId)
-                            @php
-                                $kriteria = \App\Models\Kriteria::find($kriteriaId);
-                            @endphp
-                            <th>{{ $kriteria ? $kriteria->kode : 'Kriteria #'.$kriteriaId }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($matriksNormalisasi as $alternatifId => $nilai)
-                        @php
-                            $alternatif = \App\Models\Alternatif::find($alternatifId);
-                        @endphp
-                        <tr>
-                            <td>{{ $alternatif ? $alternatif->kode : 'A'.($loop->iteration) }}</td>
-                            @foreach ($nilai as $value)
-                                <td>{{ number_format($value, 5) }}</td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-professional">
+            <thead>
+                <tr>
+                    <th>Peringkat</th>
+                    <th>Kode</th>
+                    <th>Nama Alternatif</th>
+                    <th>Nilai Optimasi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($hasil->hasil_perangkingan as $index => $alternatif)
+                <tr class="{{ $alternatif['rank'] === 1 ? 'winner-row' : '' }}">
+                    <td>
+                        @if($alternatif['rank'] === 1)
+                            <span class="rank-badge rank-1">{{ $alternatif['rank'] }}</span>
+                        @elseif($alternatif['rank'] === 2)
+                            <span class="rank-badge rank-2">{{ $alternatif['rank'] }}</span>
+                        @elseif($alternatif['rank'] === 3)
+                            <span class="rank-badge rank-3">{{ $alternatif['rank'] }}</span>
+                        @else
+                            <span class="rank-badge rank-other">{{ $alternatif['rank'] }}</span>
+                        @endif
+                    </td>
+                    <td><span class="code-badge">{{ $alternatif['kode'] }}</span></td>
+                    <td>
+                        <strong>{{ $alternatif['nama'] }}</strong>
+                        @if($alternatif['rank'] === 1)
+                            <i class="fas fa-star" style="color: #fbbf24; margin-left: 0.5rem;"></i>
+                        @endif
+                    </td>
+                    <td><span class="value-display">{{ number_format($alternatif['nilai_optimasi'], 5) }}</span></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 
-<!-- Nilai Optimasi -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">3. Nilai Optimasi</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Alternatif</th>
-                        <th>Nilai Optimasi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        // Ambil data dari hasil perangkingan yang sudah terurut
-                        $hasilPerhitungan = collect($hasil->hasil_perangkingan)->sortBy('kode');
-                    @endphp
-                    @foreach ($hasilPerhitungan as $alternatif)
-                        <tr>
-                            <td>{{ $alternatif['kode'] }} - {{ $alternatif['nama'] }}</td>
-                            <td>{{ number_format($alternatif['nilai_optimasi'], 5) }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Hasil Perangkingan -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Hasil Perangkingan</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Peringkat</th>
-                        <th>Kode</th>
-                        <th>Nama Alternatif</th>
-                        <th>Nilai Optimasi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($hasil->hasil_perangkingan as $alternatif)
-                    <tr class="{{ $alternatif['rank'] === 1 ? 'table-success' : '' }}">
-                        <td>{{ $alternatif['rank'] }}</td>
-                        <td>{{ $alternatif['kode'] }}</td>
-                        <td>{{ $alternatif['nama'] }}</td>
-                        <td>{{ number_format($alternatif['nilai_optimasi'], 5) }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Kesimpulan</h6>
-    </div>
-    <div class="card-body">
+<!-- Kesimpulan -->
+<div class="conclusion-section">
+    <div class="conclusion-content">
         @if (count($hasil->hasil_perangkingan) > 0)
             @php
                 $terbaik = collect($hasil->hasil_perangkingan)->where('rank', 1)->first();
             @endphp
             @if($terbaik)
-                <p>Berdasarkan perhitungan menggunakan metode MOORA, alternatif terbaik adalah <strong>{{ $terbaik['kode'] }} - {{ $terbaik['nama'] }}</strong> dengan nilai optimasi sebesar <strong>{{ number_format($terbaik['nilai_optimasi'], 5) }}</strong>.</p>
+                <h6 class="conclusion-title">
+                    <i class="fas fa-trophy me-2"></i>Kesimpulan
+                </h6>
+                <p class="conclusion-text">Berdasarkan perhitungan menggunakan metode <strong>MOORA</strong>, alternatif terbaik adalah:</p>
                 
-                <p>Sehingga, karyawan terbaik parking area PT. Centrepark Citra Corpora adalah <strong>{{ $terbaik['nama'] }}</strong>.</p>
+                <div class="winner-name">{{ $terbaik['kode'] }} - {{ $terbaik['nama'] }}</div>
+                <div style="color: #047857; font-weight: 500; font-size: 0.9rem;">
+                    Nilai Optimasi: {{ number_format($terbaik['nilai_optimasi'], 5) }}
+                </div>
+                
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem; border: 1px solid rgba(16, 185, 129, 0.2); font-size: 0.9rem;">
+                    <strong style="color: #065f46;">🏆 Karyawan Terbaik Parking Area: {{ $terbaik['nama'] }}</strong>
+                </div>
             @else
-                <p>Data perangkingan tidak valid.</p>
+                <h6 class="conclusion-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Kesimpulan
+                </h6>
+                <p class="conclusion-text">Data perangkingan tidak valid.</p>
             @endif
         @else
-            <p>Tidak ada data hasil perangkingan yang tersedia.</p>
+            <h6 class="conclusion-title">
+                <i class="fas fa-inbox me-2"></i>Kesimpulan
+            </h6>
+            <p class="conclusion-text">Tidak ada data hasil perangkingan yang tersedia.</p>
         @endif
     </div>
 </div>
+
+<!-- Step 1: Matriks Keputusan -->
+<div class="calculation-section">
+    <div class="section-header step-1">
+        <span class="step-badge">STEP 1</span>
+        <h3 class="section-title">
+            <i class="fas fa-table me-2"></i>Matriks Keputusan
+        </h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-professional">
+            <thead>
+                <tr>
+                    <th>Alternatif</th>
+                    @php
+                        $matriksKeputusan = $hasil->data_perhitungan['matriks_keputusan'] ?? [];
+                        $kriteriaIds = !empty($matriksKeputusan) ? array_keys(reset($matriksKeputusan)) : [];
+                    @endphp
+                    @foreach ($kriteriaIds as $kriteriaId)
+                        @php
+                            $kriteria = \App\Models\Kriteria::find($kriteriaId);
+                        @endphp
+                        <th>{{ $kriteria ? $kriteria->kode : 'C'.$kriteriaId }}</th>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    // Urutkan matriks keputusan secara natural
+                    $sortedMatriksKeputusan = collect($matriksKeputusan)
+                        ->map(function ($nilai, $alternatifId) {
+                            $alternatif = \App\Models\Alternatif::find($alternatifId);
+                            return [
+                                'alternatif_id' => $alternatifId,
+                                'kode' => $alternatif ? $alternatif->kode : '',
+                                'nilai' => $nilai
+                            ];
+                        })
+                        ->sortBy(function($item) {
+                            if (preg_match('/^([A-Za-z]+)(\d+)$/', $item['kode'], $matches)) {
+                                return $matches[1] . sprintf('%03d', (int)$matches[2]);
+                            }
+                            return $item['kode'];
+                        });
+                @endphp
+                @foreach ($sortedMatriksKeputusan as $item)
+                    <tr>
+                        <td><span class="code-badge">{{ $item['kode'] }}</span></td>
+                        @foreach ($item['nilai'] as $value)
+                            <td><span class="value-display">{{ $value }}</span></td>
+                        @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Step 2: Matriks Normalisasi -->
+<div class="calculation-section">
+    <div class="section-header step-2">
+        <span class="step-badge">STEP 2</span>
+        <h3 class="section-title">
+            <i class="fas fa-calculator me-2"></i>Matriks Normalisasi
+        </h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-professional">
+            <thead>
+                <tr>
+                    <th>Alternatif</th>
+                    @php
+                        $matriksNormalisasi = $hasil->data_perhitungan['matriks_normalisasi'] ?? [];
+                        $kriteriaIds = !empty($matriksNormalisasi) ? array_keys(reset($matriksNormalisasi)) : [];
+                    @endphp
+                    @foreach ($kriteriaIds as $kriteriaId)
+                        @php
+                            $kriteria = \App\Models\Kriteria::find($kriteriaId);
+                        @endphp
+                        <th>{{ $kriteria ? $kriteria->kode : 'C'.$kriteriaId }}</th>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    // Urutkan matriks normalisasi secara natural
+                    $sortedMatriksNormalisasi = collect($matriksNormalisasi)
+                        ->map(function ($nilai, $alternatifId) {
+                            $alternatif = \App\Models\Alternatif::find($alternatifId);
+                            return [
+                                'alternatif_id' => $alternatifId,
+                                'kode' => $alternatif ? $alternatif->kode : '',
+                                'nilai' => $nilai
+                            ];
+                        })
+                        ->sortBy(function($item) {
+                            if (preg_match('/^([A-Za-z]+)(\d+)$/', $item['kode'], $matches)) {
+                                return $matches[1] . sprintf('%03d', (int)$matches[2]);
+                            }
+                            return $item['kode'];
+                        });
+                @endphp
+                @foreach ($sortedMatriksNormalisasi as $item)
+                    <tr>
+                        <td><span class="code-badge">{{ $item['kode'] }}</span></td>
+                        @foreach ($item['nilai'] as $value)
+                            <td><span class="value-display">{{ number_format($value, 5) }}</span></td>
+                        @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Step 3: Nilai Optimasi (PERUBAHAN DI SINI) -->
+<div class="calculation-section">
+    <div class="section-header step-3">
+        <span class="step-badge">STEP 3</span>
+        <h3 class="section-title">
+            <i class="fas fa-chart-bar me-2"></i>Nilai Optimasi
+        </h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-professional">
+            <thead>
+                <tr>
+                    {{-- PERUBAHAN 1: Menyesuaikan header tabel seperti di admin --}}
+                    <th>Kode</th>
+                    <th>Nama Alternatif</th>
+                    <th>Nilai Optimasi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    // PERUBAHAN 2: Menggunakan 'natural sort' agar urutan benar (A1, A2, ..., A10)
+                    $hasilPerhitungan = collect($hasil->hasil_perangkingan)->sortBy(function($item) {
+                        if (preg_match('/^([A-Za-z]+)(\d+)$/', $item['kode'], $matches)) {
+                            return $matches[1] . sprintf('%03d', (int)$matches[2]);
+                        }
+                        return $item['kode'];
+                    });
+                @endphp
+                @foreach ($hasilPerhitungan as $alternatif)
+                    <tr>
+                        {{-- PERUBAHAN 3: Memisahkan Kode dan Nama ke kolom berbeda --}}
+                        <td><span class="code-badge">{{ $alternatif['kode'] }}</span></td>
+                        <td class="text-start"><strong>{{ $alternatif['nama'] }}</strong></td>
+                        <td><span class="value-display">{{ number_format($alternatif['nilai_optimasi'], 5) }}</span></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
 @endsection
