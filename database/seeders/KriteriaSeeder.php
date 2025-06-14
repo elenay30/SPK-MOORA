@@ -1,7 +1,5 @@
 <?php
-
 namespace Database\Seeders;
-
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +31,7 @@ class KriteriaSeeder extends Seeder
             [
                 'kode' => 'C3',
                 'nama' => 'Sikap',
-                'bobot' => 0.15,
+                'bobot' => 0.16,
                 'jenis' => 'benefit',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -41,7 +39,7 @@ class KriteriaSeeder extends Seeder
             [
                 'kode' => 'C4',
                 'nama' => 'Kehadiran',
-                'bobot' => 0.11,
+                'bobot' => 0.12,
                 'jenis' => 'benefit',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -49,7 +47,7 @@ class KriteriaSeeder extends Seeder
             [
                 'kode' => 'C5',
                 'nama' => 'Skill',
-                'bobot' => 0.08,
+                'bobot' => 0.11,
                 'jenis' => 'benefit',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -57,7 +55,7 @@ class KriteriaSeeder extends Seeder
             [
                 'kode' => 'C6',
                 'nama' => 'Loyalitas',
-                'bobot' => 0.05,
+                'bobot' => 0.08,
                 'jenis' => 'benefit',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -65,7 +63,7 @@ class KriteriaSeeder extends Seeder
             [
                 'kode' => 'C7',
                 'nama' => 'Masa Kerja',
-                'bobot' => 0.03,
+                'bobot' => 0.05,
                 'jenis' => 'benefit',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -73,7 +71,7 @@ class KriteriaSeeder extends Seeder
             [
                 'kode' => 'C8',
                 'nama' => 'Produktifitas',
-                'bobot' => 0.02,
+                'bobot' => 0.03,
                 'jenis' => 'benefit',
                 'created_at' => now(),
                 'updated_at' => now(),

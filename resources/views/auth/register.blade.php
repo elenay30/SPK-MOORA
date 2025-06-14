@@ -176,7 +176,7 @@
     color: #ef4444;
 }
 
-/* Clean Captcha Container */
+/* Clean Captcha Container - UPDATED FOR CENTERING */
 .captcha-container {
     background: #f8fafc;
     border-radius: 8px;
@@ -184,6 +184,10 @@
     margin: 2rem 0;
     text-align: center;
     border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .captcha-title {
@@ -209,6 +213,19 @@
     background: #fef2f2;
     padding: 0.5rem;
     border-radius: 6px;
+}
+
+/* reCAPTCHA Centering */
+.g-recaptcha {
+    margin: 0 auto !important;
+    display: inline-block !important;
+}
+
+#recaptcha-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Professional Submit Button */
@@ -317,16 +334,35 @@
     flex: 1;
 }
 
-/* CSRF Token Display (untuk debugging) */
-.csrf-debug {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    color: #166534;
-    padding: 0.75rem;
+/* Error Alert Styling */
+.alert {
+    padding: 1rem;
     border-radius: 6px;
     margin-bottom: 1rem;
-    font-size: 0.85rem;
-    word-break: break-all;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    color: #dc3545;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-info {
+    background: #e3f2fd;
+    color: #0277bd;
+    border: 1px solid #b3e5fc;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.alert-warning {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fed7aa;
 }
 
 /* Responsive Design */
@@ -380,13 +416,6 @@
                         <p class="register-subtitle">Buat akun baru untuk mengakses sistem</p>
                     </div>
                     <div class="register-body">
-                        {{-- CSRF Token Debug Info (hapus di production) --}}
-                        @if(app()->environment(['local', 'testing']))
-                        <div class="csrf-debug">
-                            <strong>🔒 CSRF Token Active:</strong> {{ substr(csrf_token(), 0, 20) }}...
-                        </div>
-                        @endif
-
                         {{-- Session Messages --}}
                         @if(session('message'))
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -532,16 +561,50 @@
                                 </div>
                             </div>
 
-                            {{-- reCAPTCHA --}}
+                            {{-- reCAPTCHA - PERBAIKAN LENGKAP --}}
                             <div class="captcha-container">
                                 <div class="captcha-title">
                                     <i class="fas fa-shield-alt"></i>
                                     Verifikasi Keamanan
                                 </div>
-                                <div class="g-recaptcha" 
-                                     data-sitekey="{{ config('services.recaptcha.site_key', env('RECAPTCHA_SITE_KEY')) }}"
-                                     data-callback="recaptchaCallback">
+                                
+                                {{-- Wrapper untuk memusatkan captcha --}}
+                                <div style="display: flex; justify-content: center; align-items: center; width: 100%; min-height: 78px;">
+                                    {{-- CAPTCHA Widget dengan error handling --}}
+                                    @if(config('services.recaptcha.site_key', env('RECAPTCHA_SITE_KEY')))
+                                        <div id="recaptcha-container">
+                                            {{-- Loading indicator --}}
+                                            <div id="recaptcha-loading" style="display: block;">
+                                                <div style="padding: 20px; color: #666;">
+                                                    <i class="fas fa-spinner fa-spin"></i> Memuat verifikasi...
+                                                </div>
+                                            </div>
+                                            
+                                            {{-- Manual reCAPTCHA implementation --}}
+                                            <div id="manual-recaptcha" 
+                                                 class="g-recaptcha" 
+                                                 data-sitekey="{{ config('services.recaptcha.site_key', env('RECAPTCHA_SITE_KEY')) }}"
+                                                 data-callback="recaptchaCallback"
+                                                 data-expired-callback="recaptchaExpiredCallback"
+                                                 data-error-callback="recaptchaErrorCallback"
+                                                 style="display: none;">
+                                            </div>
+                                            
+                                            {{-- Error fallback --}}
+                                            <div id="recaptcha-error" style="display: none;">
+                                                <div class="alert alert-warning">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    reCAPTCHA gagal dimuat. <button type="button" onclick="reloadRecaptcha()" class="btn btn-sm btn-outline-warning ms-2">Muat Ulang</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="alert alert-danger">
+                                            <strong>Error:</strong> reCAPTCHA Site Key tidak dikonfigurasi!
+                                        </div>
+                                    @endif
                                 </div>
+
                                 @error('g-recaptcha-response')
                                 <div class="captcha-error">
                                     <i class="fas fa-exclamation-triangle me-1"></i>
@@ -581,6 +644,12 @@
 </div>
 
 <script>
+// Global variables untuk reCAPTCHA
+let recaptchaWidgetId = null;
+let recaptchaLoaded = false;
+let recaptchaAttempts = 0;
+const maxRecaptchaAttempts = 3;
+
 // Enhanced form interaction dengan CSRF protection
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registerForm');
@@ -609,20 +678,38 @@ document.addEventListener('DOMContentLoaded', function() {
         symbol: document.getElementById('req-symbol')
     };
     
-    // reCAPTCHA callback
+    // reCAPTCHA variables
     let recaptchaVerified = false;
-    window.recaptchaCallback = function() {
-        recaptchaVerified = true;
-        checkFormValidity();
-        console.log('reCAPTCHA verified');
+    
+    // Disable submit button initially if reCAPTCHA is required
+    if ('{{ config('services.recaptcha.site_key', env('RECAPTCHA_SITE_KEY')) }}') {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+    }
+    
+    // Initialize reCAPTCHA when script loads
+    window.onRecaptchaLoad = function() {
+        console.log('📦 reCAPTCHA script loaded');
+        initializeRecaptcha();
     };
     
-    // Expired reCAPTCHA callback
+    // reCAPTCHA callback functions
+    window.recaptchaCallback = function(response) {
+        console.log('✅ reCAPTCHA verified, response length:', response.length);
+        recaptchaVerified = true;
+        checkFormValidity();
+    };
+    
     window.recaptchaExpiredCallback = function() {
+        console.warn('⚠️ reCAPTCHA expired');
         recaptchaVerified = false;
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.6';
-        console.log('reCAPTCHA expired');
+    };
+    
+    window.recaptchaErrorCallback = function(error) {
+        console.error('❌ reCAPTCHA error:', error);
+        showRecaptchaError();
     };
     
     // Password validation
@@ -749,7 +836,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Verify reCAPTCHA
-        const recaptchaResponse = grecaptcha.getResponse();
+        let recaptchaResponse = '';
+        try {
+            if (recaptchaWidgetId !== null) {
+                recaptchaResponse = grecaptcha.getResponse(recaptchaWidgetId);
+            } else {
+                recaptchaResponse = grecaptcha.getResponse();
+            }
+        } catch (error) {
+            console.error('❌ Error getting reCAPTCHA response:', error);
+        }
+        
         if (!recaptchaResponse) {
             e.preventDefault();
             alert('Silakan selesaikan verifikasi reCAPTCHA.');
@@ -802,8 +899,88 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial form validity check
     checkFormValidity();
 });
+
+// Initialize reCAPTCHA
+function initializeRecaptcha() {
+    if (recaptchaAttempts >= maxRecaptchaAttempts) {
+        console.error('❌ Max reCAPTCHA attempts reached');
+        showRecaptchaError();
+        return;
+    }
+    
+    recaptchaAttempts++;
+    console.log(`🔄 Attempting to initialize reCAPTCHA (attempt ${recaptchaAttempts})`);
+    
+    try {
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.render) {
+            // Hide loading, show recaptcha
+            document.getElementById('recaptcha-loading').style.display = 'none';
+            document.getElementById('manual-recaptcha').style.display = 'block';
+            document.getElementById('recaptcha-error').style.display = 'none';
+            
+            // Render reCAPTCHA
+            recaptchaWidgetId = grecaptcha.render('manual-recaptcha', {
+                'sitekey': '{{ config('services.recaptcha.site_key', env('RECAPTCHA_SITE_KEY')) }}',
+                'callback': recaptchaCallback,
+                'expired-callback': recaptchaExpiredCallback,
+                'error-callback': recaptchaErrorCallback
+            });
+            
+            recaptchaLoaded = true;
+            console.log('✅ reCAPTCHA initialized successfully, widget ID:', recaptchaWidgetId);
+        } else {
+            throw new Error('grecaptcha not available');
+        }
+    } catch (error) {
+        console.error('❌ Failed to initialize reCAPTCHA:', error);
+        setTimeout(() => {
+            initializeRecaptcha();
+        }, 2000);
+    }
+}
+
+// Show reCAPTCHA error
+function showRecaptchaError() {
+    document.getElementById('recaptcha-loading').style.display = 'none';
+    document.getElementById('manual-recaptcha').style.display = 'none';
+    document.getElementById('recaptcha-error').style.display = 'block';
+}
+
+// Reload reCAPTCHA
+function reloadRecaptcha() {
+    console.log('🔄 Reloading reCAPTCHA...');
+    recaptchaAttempts = 0;
+    recaptchaLoaded = false;
+    
+    // Reset display
+    document.getElementById('recaptcha-loading').style.display = 'block';
+    document.getElementById('manual-recaptcha').style.display = 'none';
+    document.getElementById('recaptcha-error').style.display = 'none';
+    
+    // Reset widget
+    if (recaptchaWidgetId !== null && typeof grecaptcha !== 'undefined') {
+        try {
+            grecaptcha.reset(recaptchaWidgetId);
+        } catch (error) {
+            console.warn('⚠️ Could not reset existing widget:', error);
+        }
+    }
+    
+    // Reinitialize
+    setTimeout(() => {
+        initializeRecaptcha();
+    }, 1000);
+}
+
+// Handle reCAPTCHA script load failure
+window.addEventListener('error', function(e) {
+    if (e.target.src && e.target.src.includes('recaptcha')) {
+        console.error('❌ reCAPTCHA script failed to load');
+        showRecaptchaError();
+    }
+});
 </script>
 
-{{-- reCAPTCHA Script --}}
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{{-- reCAPTCHA Script dengan callback --}}
+<script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer onerror="showRecaptchaError()"></script>
 @endsection

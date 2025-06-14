@@ -15,7 +15,13 @@ class SubKriteriaController extends Controller
      */
     public function index()
     {
-        $subKriterias = SubKriteria::with('kriteria')->get();
+        // GUNAKAN KODE BARU DI BAWAH INI:
+        $subKriterias = SubKriteria::join('kriterias', 'sub_kriterias.kriteria_id', '=', 'kriterias.id')
+            ->orderBy('kriterias.kode', 'asc')      // Urutan 1: Berdasarkan Kode Kriteria (C1, C2, ...)
+            ->orderBy('sub_kriterias.nilai', 'desc') // Urutan 2: Berdasarkan Nilai Sub Kriteria (4, 3, ...)
+            ->select('sub_kriterias.*')              // Pilih semua kolom dari sub_kriterias
+            ->with('kriteria')                       // Eager load relasi setelah diurutkan
+            ->get();
         return view('admin.subkriteria.index', compact('subKriterias'));
     }
 

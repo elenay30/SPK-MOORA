@@ -24,13 +24,15 @@ use Illuminate\Support\Facades\Route;
 // PUBLIC ROUTES (No Authentication Required)
 // ======================================================================
 
-// Root redirect
+// Root redirect - UBAH BAGIAN INI
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('dashboard');
-    }
-    return redirect()->route('login');
-});
+    return view('welcome'); // Langsung ke welcome page
+})->name('home');
+
+// Welcome page - TETAP ADA
+Route::get('/welcome', function () {
+    return view('welcome');
+})->name('welcome');
 
 // Welcome page
 Route::get('/welcome', function () {

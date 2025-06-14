@@ -14,10 +14,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Custom CSS -->
     <style>
+        /* PERBAIKAN CSS - Menghilangkan konflik dan mempertahankan struktur tabel */
+
         :root {
             --primary: #a16207;
             --secondary: #ca8a04;
@@ -38,11 +42,8 @@
             --header-height: 80px;
         }
 
-        /* PERBAIKAN RADIKAL: Hilangkan SEMUA garis di bagian bawah viewport */
+        /* RESET YANG LEBIH SELEKTIF - HANYA UNTUK ELEMEN YANG DIPERLUKAN */
         html {
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
             background: linear-gradient(135deg, var(--warm-gray) 0%, #f3f2f0 100%) !important;
             overflow-x: hidden !important;
             margin: 0 !important;
@@ -56,33 +57,27 @@
             background: linear-gradient(135deg, var(--warm-gray) 0%, #f3f2f0 100%);
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-dark);
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
             margin: 0 !important;
             padding: 0 !important;
             overflow-x: hidden !important;
         }
 
-        /* Hilangkan semua pseudo-element yang bisa membuat garis */
-        html::before, html::after,
-        body::before, body::after {
-            display: none !important;
-            content: none !important;
+        /* HANYA HILANGKAN GARIS PADA ELEMEN LAYOUT UTAMA - BUKAN TABEL */
+        .container-fluid,
+        .row:not(.table-responsive .row),
+        main,
+        footer {
+            border-bottom: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-top: none !important;
         }
 
-        /* Override semua kemungkinan garis */
-        * {
-            border-bottom-color: transparent !important;
-            border-bottom-width: 0 !important;
-            border-bottom-style: none !important;
-        }
-
-        /* Khusus untuk container Bootstrap */
+        /* PASTIKAN VIEWPORT TIDAK ADA GARIS TAPI TETAP PERTAHANKAN GARIS TABEL */
+        html::after,
+        body::after,
         .container-fluid::after,
-        .row::after,
-        .col-md-9::after,
-        .col-lg-10::after {
+        .main-content::after {
             display: none !important;
             content: none !important;
         }
@@ -116,8 +111,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(2deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(2deg);
+            }
         }
 
         .navbar-brand {
@@ -136,9 +138,17 @@
         }
 
         @keyframes shimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .navbar-brand:hover {
@@ -157,9 +167,22 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(-50%); }
-            40% { transform: translateY(-60%); }
-            60% { transform: translateY(-55%); }
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(-50%);
+            }
+
+            40% {
+                transform: translateY(-60%);
+            }
+
+            60% {
+                transform: translateY(-55%);
+            }
         }
 
         /* Enhanced Navigation Links */
@@ -203,7 +226,7 @@
             left: 100%;
         }
 
-        /* SIMPLIFIED DROPDOWN */
+        /* User Dropdown */
         .user-dropdown {
             position: relative;
             display: inline-block;
@@ -314,50 +337,6 @@
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
-        /* Responsive adjustments for header */
-        @media (max-width: 991.98px) {
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-            
-            .navbar-brand::before {
-                left: -2rem;
-                font-size: 1.2rem;
-            }
-
-            .navbar-collapse {
-                background: rgba(26, 54, 93, 0.95);
-                backdrop-filter: blur(20px);
-                border-radius: 15px;
-                margin-top: 1rem;
-                padding: 1rem;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                z-index: 1002;
-            }
-
-            .user-dropdown-menu {
-                position: static !important;
-                transform: none !important;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-                border: 1px solid rgba(255, 255, 255, 0.2) !important;
-                background: rgba(255, 255, 255, 0.95) !important;
-                margin-top: 0.5rem !important;
-                border-radius: 10px !important;
-                opacity: 1 !important;
-                visibility: visible !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar-brand {
-                font-size: 1.25rem;
-            }
-
-            .navbar-brand::before {
-                display: none;
-            }
-        }
-
         /* Button styling */
         .btn-primary {
             background-color: var(--primary);
@@ -436,174 +415,27 @@
             min-height: calc(100vh - var(--header-height));
         }
 
-        /* Footer - GARIS BAWAH DIHILANGKAN */
+        /* Footer - TANPA GARIS */
         footer {
             padding: 1rem 0;
-            background: transparent; /* Diubah dari white menjadi transparent */
-            /* border-top: 1px solid #e5e7eb; - DIHILANGKAN */
+            background: transparent;
             color: var(--text-light);
             border: none !important;
             box-shadow: none !important;
         }
 
-        /* Hilangkan semua garis yang mungkin ada di bagian bawah */
-        html, body {
-            border-bottom: none !important;
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
-
-        /* Hilangkan border dari container dan elemen lainnya */
-        .container-fluid,
-        .container,
-        main,
-        .row {
-            border-bottom: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Pastikan tidak ada pseudo-element yang membuat garis */
-        *::after,
-        *::before {
-            border-bottom: none !important;
-        }
-
-        /* Khusus untuk menghilangkan garis di viewport bottom */
-        body::after {
-            display: none !important;
-        }
-
-        /* Override semua kemungkinan elemen yang bisa buat garis */
-        div, span, section, article, main, header, footer, nav, ul, li, p, h1, h2, h3, h4, h5, h6 {
-            border-bottom: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Pastikan viewport tidak ada garis */
-        @media screen {
-            html, body {
-                border: none !important;
-                box-shadow: none !important;
-                outline: none !important;
-            }
-        }
-
-        /* Hilangkan semua border dan outline yang mungkin muncul */
-        *, *::before, *::after {
-            border-bottom: none !important;
-            outline-bottom: none !important;
-        }
-
-        /* PERBAIKAN RADIKAL: Hilangkan SEMUA garis di bagian bawah viewport */
-        html {
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-            background: linear-gradient(135deg, var(--warm-gray) 0%, #f3f2f0 100%) !important;
-            overflow-x: hidden !important;
-        }
-
-        body {
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow-x: hidden !important;
-        }
-
-        /* Hilangkan semua pseudo-element yang bisa membuat garis */
-        html::before, html::after,
-        body::before, body::after {
-            display: none !important;
-            content: none !important;
-        }
-
-        /* Hilangkan garis dari viewport dan window */
-        :root {
-            border: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Pastikan viewport tidak ada garis */
-        @media screen {
-            html, body {
-                border: none !important;
-                box-shadow: none !important;
-                outline: none !important;
-            }
-        }
-
-        /* Khusus untuk halaman login - hilangkan semua garis */
-        .login-page,
-        .auth-page,
-        .guest-page {
-            border: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Hilangkan garis dari viewport dan window */
-        html {
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Hilangkan border dari semua div, section, dan container */
-        div, section, article, main, header, footer, nav {
-            border-bottom: none !important;
-            border: none !important;
-        }
-
-        /* Khusus untuk elemen yang mungkin memiliki border default */
-        .container, .container-fluid, .row, .col-*, [class*="col-"] {
-            border: none !important;
-            border-bottom: none !important;
-            outline: none !important;
-        }
-
-        /* Hilangkan semua box-shadow yang mungkin terlihat seperti garis */
-        * {
-            box-shadow: none !important;
-        }
-
-        /* Override untuk elemen yang memang butuh shadow (kecuali bottom) */
-        .card, .modal, .dropdown-menu, .navbar {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
-        }
-
-        /* Pastikan tidak ada pseudo-element yang membuat garis di bottom */
-        html::after, body::after, main::after, footer::after {
-            display: none !important;
-        }
-
-        /* TAMBAHAN KHUSUS: Hilangkan garis emas/coklat yang muncul di viewport */
-        * {
-            border-bottom-color: transparent !important;
-            border-bottom-width: 0 !important;
-            border-bottom-style: none !important;
-        }
-
-        /* Override semua kemungkinan elemen yang bisa buat garis */
-        div, span, section, article, main, header, footer, nav, ul, li, p, h1, h2, h3, h4, h5, h6 {
-            border-bottom: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Khusus untuk menghilangkan garis di bagian bawah halaman */
-        .container-fluid::after,
-        .row::after,
-        .col-md-9::after,
-        .col-lg-10::after {
-            display: none !important;
-            content: none !important;
-        }
+        /* =============================================== */
+        /* STYLING KHUSUS UNTUK TABEL - JANGAN DIHILANGKAN */
+        /* =============================================== */
 
         /* Card dashboard styling */
         .card-dashboard {
             border-left: 4px solid var(--primary);
             transition: all 0.2s ease;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .card-dashboard:hover {
@@ -633,6 +465,7 @@
             border-color: #bbf7d0;
             color: #166534;
             border-radius: 8px;
+            border: 1px solid #bbf7d0;
         }
 
         .alert-danger {
@@ -640,6 +473,7 @@
             border-color: #fecaca;
             color: #dc2626;
             border-radius: 8px;
+            border: 1px solid #fecaca;
         }
 
         .alert-info {
@@ -647,6 +481,7 @@
             border-color: #bfdbfe;
             color: #1e40af;
             border-radius: 8px;
+            border: 1px solid #bfdbfe;
         }
 
         .alert-warning {
@@ -654,95 +489,179 @@
             border-color: #fed7aa;
             color: #92400e;
             border-radius: 8px;
+            border: 1px solid #fed7aa;
         }
 
-        /* Table styling */
+        /* =============================================== */
+        /* TABLE STYLING - PERTAHANKAN SEMUA GARIS TABEL */
+        /* =============================================== */
+
         .table {
             background: white;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb !important;
+            /* PASTIKAN BORDER TABEL ADA */
         }
 
         .table thead {
             background: var(--brown-light);
+            border-bottom: 2px solid #e5e7eb !important;
+            /* GARIS BAWAH HEADER */
         }
 
         .table thead th {
-            border-bottom: none;
+            border-bottom: 2px solid #e5e7eb !important;
+            /* GARIS ANTAR KOLOM HEADER */
+            border-right: 1px solid #f3f4f6 !important;
+            /* GARIS KANAN HEADER */
             color: var(--text-dark);
             font-weight: 600;
+            padding: 1rem 1.25rem;
         }
 
-        /* Button enhancements */
-        .btn {
-            border-radius: 8px;
+        .table thead th:last-child {
+            border-right: none !important;
+        }
+
+        .table tbody td {
+            border-bottom: 1px solid #f3f4f6 !important;
+            /* GARIS BAWAH CELL */
+            border-right: 1px solid #f9fafb !important;
+            /* GARIS KANAN CELL */
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+            transition: all 0.2s ease;
+        }
+
+        .table tbody td:last-child {
+            border-right: none !important;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: 1px solid #e5e7eb !important;
+            /* GARIS BAWAH ROW TERAKHIR */
+        }
+
+        .table tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        /* Enhanced Table Classes */
+        .table-enhanced {
+            margin: 0;
+            font-size: 0.9rem;
+            background: white;
+            width: 100%;
+            border: 1px solid #e5e7eb !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+        }
+
+        .table-enhanced thead {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb !important;
+        }
+
+        .table-enhanced thead th {
+            border: none;
+            border-bottom: 2px solid #e5e7eb !important;
+            border-right: 1px solid #f3f4f6 !important;
+            padding: 1rem 1.25rem;
             font-weight: 600;
+            color: #374151;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .table-enhanced thead th:last-child {
+            border-right: none !important;
+        }
+
+        .table-enhanced tbody td {
+            padding: 1rem 1.25rem;
+            border: none;
+            border-bottom: 1px solid #f3f4f6 !important;
+            border-right: 1px solid #f9fafb !important;
+            vertical-align: middle;
             transition: all 0.2s ease;
         }
 
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(161, 98, 7, 0.2);
+        .table-enhanced tbody td:last-child {
+            border-right: none !important;
         }
 
-        /* Form styling */
-        .form-control {
+        .table-enhanced tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table-enhanced tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        .table-enhanced tbody tr:last-child td {
+            border-bottom: 1px solid #e5e7eb !important;
+        }
+
+        /* Table Responsive */
+        .table-responsive {
+            border: 1px solid #e5e7eb !important;
             border-radius: 8px;
-            border: 2px solid #e9ecef;
-            transition: all 0.2s ease;
+            overflow: hidden;
         }
 
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.2rem rgba(161, 98, 7, 0.15);
+        /* DataTable Wrapper - JANGAN HILANGKAN BORDER */
+        .dataTables_wrapper {
+            border: none !important;
+            /* Wrapper tidak perlu border */
         }
 
-        /* Modal styling */
-        .modal-content {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 1rem;
+            border: none !important;
         }
 
-        .modal-header {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            border-radius: 10px 10px 0 0;
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_filter label {
+            font-weight: 500;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none !important;
         }
 
-        .modal-footer {
-            border: none;
-            background: #f8f9fa;
-            border-radius: 0 0 10px 10px;
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 1rem;
+            border: none !important;
         }
 
-        /* Pagination styling */
-        .page-item.active .page-link {
-            background-color: var(--primary);
-            border-color: var(--primary);
+        .dataTables_wrapper .dataTables_info {
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            border: none !important;
         }
 
-        .page-link {
-            color: var(--primary);
-            border-radius: 6px;
-            margin: 0 2px;
-        }
+        /* =============================================== */
+        /* CARD STYLING - PERTAHANKAN BORDER YANG DIPERLUKAN */
+        /* =============================================== */
 
-        .page-link:hover {
-            color: var(--secondary);
-            background-color: var(--brown-light);
-        }
-
-        /* Card styling */
         .card {
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb !important;
+            /* BORDER CARD */
             transition: all 0.2s ease;
+            background: white;
         }
-        
+
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(161, 98, 7, 0.1);
@@ -750,8 +669,77 @@
 
         .card-header {
             background: var(--brown-light);
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary) !important;
+            /* GARIS BAWAH HEADER CARD */
             font-weight: 600;
+            border-radius: 10px 10px 0 0;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .card-enhanced {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05) !important;
+            /* BORDER CARD ENHANCED */
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(161, 98, 7, 0.15);
+        }
+
+        .card-header-enhanced {
+            background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+            border-bottom: 2px solid var(--primary) !important;
+            /* GARIS BAWAH HEADER */
+            padding: 1.25rem 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* =============================================== */
+        /* FORM DAN ELEMENT LAINNYA */
+        /* =============================================== */
+
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e9ecef !important;
+            /* BORDER FORM */
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 0.2rem rgba(161, 98, 7, 0.15);
+        }
+
+        /* Modal styling */
+        .modal-content {
+            border: 1px solid #e5e7eb !important;
+            /* BORDER MODAL */
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background: var(--gradient);
+            color: white;
+            border-bottom: 2px solid var(--primary) !important;
+            /* GARIS BAWAH MODAL HEADER */
+            border-radius: 10px 10px 0 0;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e5e7eb !important;
+            /* GARIS ATAS MODAL FOOTER */
+            background: #f8f9fa;
+            border-radius: 0 0 10px 10px;
         }
 
         /* Badge styling */
@@ -759,41 +747,69 @@
             font-weight: 600;
             padding: 6px 12px;
             border-radius: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            /* BORDER BADGE */
         }
 
-        /* Responsive adjustments */
+        /* Responsive adjustments for header */
+        @media (max-width: 991.98px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .navbar-brand::before {
+                left: -2rem;
+                font-size: 1.2rem;
+            }
+
+            .navbar-collapse {
+                background: rgba(26, 54, 93, 0.95);
+                backdrop-filter: blur(20px);
+                border-radius: 15px;
+                margin-top: 1rem;
+                padding: 1rem;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                z-index: 1002;
+            }
+
+            .user-dropdown-menu {
+                position: static !important;
+                transform: none !important;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+                border: 1px solid rgba(255, 255, 255, 0.2) !important;
+                background: rgba(255, 255, 255, 0.95) !important;
+                margin-top: 0.5rem !important;
+                border-radius: 10px !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+        }
+
         @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+
+            .navbar-brand::before {
+                display: none;
+            }
+
             .sidebar .nav-link {
                 margin: 1px 5px;
                 padding: 10px 12px;
             }
-            
+
             .sidebar .nav-link:hover {
                 transform: none;
             }
-        }
 
-        /* Print styles */
-        @media print {
-            .sidebar,
-            .navbar,
-            .btn,
-            .modal {
-                display: none !important;
+            .table-enhanced {
+                font-size: 0.8rem;
             }
 
-            .main-content {
-                margin: 0;
-                padding: 0;
-            }
-
-            .card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
-
-            .table {
-                font-size: 12px;
+            .table-enhanced thead th,
+            .table-enhanced tbody td {
+                padding: 0.75rem 0.5rem;
             }
         }
 
@@ -824,8 +840,7 @@
     <!-- Enhanced Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand"
-                href="{{ auth()->check() ? (auth()->user()->isAdmin() ? route('admin.dashboard') : route('user.dashboard')) : route('login') }}">
+            <a class="navbar-brand" href="{{ route('welcome') }}">
                 SPK Karyawan Terbaik
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -844,7 +859,7 @@
                             <a class="nav-link" href="{{ route('register') }}">
                                 <i class="fas fa-user-plus me-2"></i>Register
                             </a>
-        </li>
+                        </li>
                     @else
                         <li class="nav-item">
                             <div class="user-dropdown" id="userDropdown">
@@ -1011,17 +1026,17 @@
         }
 
         // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             const dropdown = document.getElementById('userDropdown');
             const isClickInside = dropdown.contains(event.target);
-            
+
             if (!isClickInside) {
                 dropdown.classList.remove('show');
             }
         });
 
         // Prevent dropdown from closing when clicking inside
-        document.getElementById('userDropdown').addEventListener('click', function(event) {
+        document.getElementById('userDropdown').addEventListener('click', function (event) {
             event.stopPropagation();
         });
     </script>
@@ -1029,4 +1044,4 @@
     @yield('scripts')
 </body>
 
-</html> 
+</html>

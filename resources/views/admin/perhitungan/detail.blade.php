@@ -2,6 +2,7 @@
 
 @section('title', 'Detail Perhitungan MOORA')
 
+{{-- STYLES SECTION (TIDAK ADA PERUBAHAN) --}}
 @section('styles')
 <style>
     /* Professional and clean styling */
@@ -403,6 +404,7 @@
 </style>
 @endsection
 
+{{-- SCRIPTS SECTION (TIDAK ADA PERUBAHAN) --}}
 @section('scripts')
 <script>
     // Print functionality with clean styling
@@ -427,6 +429,7 @@
 </script>
 @endsection
 
+{{-- CONTENT SECTION (DENGAN PERBAIKAN LOGIKA) --}}
 @section('content')
 <div class="page-header">
     <div class="page-header-content">
@@ -565,22 +568,18 @@
             </thead>
             <tbody>
                 @php
-                    // Urutkan matriks keputusan secara natural
                     $sortedMatriksKeputusan = collect($matriksKeputusan)
                         ->map(function ($nilai, $alternatifId) {
                             $alternatif = \App\Models\Alternatif::find($alternatifId);
                             return [
-                                'alternatif_id' => $alternatifId,
-                                'kode' => $alternatif ? $alternatif->kode : '',
+                                'kode' => $alternatif ? $alternatif->kode : 'A'.$alternatifId,
                                 'nilai' => $nilai
                             ];
                         })
                         ->sortBy(function($item) {
-                            if (preg_match('/^([A-Za-z]+)(\d+)$/', $item['kode'], $matches)) {
-                                return $matches[1] . sprintf('%03d', (int)$matches[2]);
-                            }
-                            return $item['kode'];
-                        });
+                            preg_match('/\d+$/', $item['kode'], $matches);
+                            return (int) ($matches[0] ?? 0);
+                        })->values();
                 @endphp
                 @foreach ($sortedMatriksKeputusan as $item)
                     <tr>
@@ -622,22 +621,18 @@
             </thead>
             <tbody>
                 @php
-                    // Urutkan matriks normalisasi secara natural
                     $sortedMatriksNormalisasi = collect($matriksNormalisasi)
                         ->map(function ($nilai, $alternatifId) {
                             $alternatif = \App\Models\Alternatif::find($alternatifId);
                             return [
-                                'alternatif_id' => $alternatifId,
-                                'kode' => $alternatif ? $alternatif->kode : '',
+                                'kode' => $alternatif ? $alternatif->kode : 'A'.$alternatifId,
                                 'nilai' => $nilai
                             ];
                         })
                         ->sortBy(function($item) {
-                            if (preg_match('/^([A-Za-z]+)(\d+)$/', $item['kode'], $matches)) {
-                                return $matches[1] . sprintf('%03d', (int)$matches[2]);
-                            }
-                            return $item['kode'];
-                        });
+                            preg_match('/\d+$/', $item['kode'], $matches);
+                            return (int) ($matches[0] ?? 0);
+                        })->values();
                 @endphp
                 @foreach ($sortedMatriksNormalisasi as $item)
                     <tr>
@@ -652,7 +647,7 @@
     </div>
 </div>
 
-<!-- Step 3: Nilai Optimasi - FIXED VERSION -->
+<!-- Step 3: Nilai Optimasi -->
 <div class="calculation-section">
     <div class="section-header step-3">
         <span class="step-badge">STEP 3</span>
@@ -671,85 +666,18 @@
             </thead>
             <tbody>
                 @php
-                    // Method 1: Coba ambil dari data_perhitungan nilai_optimasi
-                    $nilaiOptimasiData = $hasil->data_perhitungan['nilai_optimasi'] ?? [];
+                    // =========================================================================
+                    // PERBAIKAN: Gunakan data dari hasil_perangkingan yang sudah lengkap
+                    // dan urutkan berdasarkan kode secara natural.
+                    // Ini adalah cara paling aman untuk mencegah data yatim.
+                    // =========================================================================
+                    $rankingData = collect($hasil->hasil_perangkingan);
                     
-                    // Method 2: Jika tidak ada atau kosong, coba dari hasil_perangkingan
-                    if (empty($nilaiOptimasiData) && !empty($hasil->hasil_perangkingan)) {
-                        $nilaiOptimasiData = collect($hasil->hasil_perangkingan)
-                            ->pluck('nilai_optimasi', 'alternatif_id')
-                            ->toArray();
-                    }
-                    
-                    // Method 3: Ambil semua alternatif dan cocokkan dengan data yang ada
-                    $allAlternatifs = \App\Models\Alternatif::orderBy('kode')->get();
-                    
-                    $sortedNilaiOptimasi = $allAlternatifs->map(function($alternatif) use ($nilaiOptimasiData, $hasil) {
-                        // Cari nilai optimasi untuk alternatif ini
-                        $nilaiOptimasi = 0;
-                        
-                        // Coba dari data_perhitungan
-                        if (isset($nilaiOptimasiData[$alternatif->id])) {
-                            $nilaiOptimasi = $nilaiOptimasiData[$alternatif->id];
-                        } 
-                        // Coba dari hasil_perangkingan berdasarkan kode
-                        elseif (!empty($hasil->hasil_perangkingan)) {
-                            $hasilItem = collect($hasil->hasil_perangkingan)
-                                ->where('kode', $alternatif->kode)
-                                ->first();
-                            if ($hasilItem) {
-                                $nilaiOptimasi = $hasilItem['nilai_optimasi'] ?? 0;
-                            }
-                        }
-                        // Coba dari hasil_perangkingan berdasarkan nama
-                        elseif (!empty($hasil->hasil_perangkingan)) {
-                            $hasilItem = collect($hasil->hasil_perangkingan)
-                                ->where('nama', $alternatif->nama)
-                                ->first();
-                            if ($hasilItem) {
-                                $nilaiOptimasi = $hasilItem['nilai_optimasi'] ?? 0;
-                            }
-                        }
-                        
-                        return [
-                            'alternatif_id' => $alternatif->id,
-                            'kode' => $alternatif->kode,
-                            'nama' => $alternatif->nama,
-                            'nilai' => $nilaiOptimasi
-                        ];
-                    })->filter(function($item) {
-                        // Filter hanya yang memiliki data valid
-                        return !empty($item['kode']) && !empty($item['nama']);
-                    })->sortBy(function($item) {
-                        // Natural sort untuk kode seperti A1, A2, ..., A10
-                        if (preg_match('/^([A-Za-z]+)(\d+)$/', $item['kode'], $matches)) {
-                            return $matches[1] . sprintf('%03d', (int)$matches[2]);
-                        }
-                        return $item['kode'];
-                    });
-                    
-                    // Method 4: Fallback - jika masih kosong, coba langsung dari collection data_perhitungan
-                    if ($sortedNilaiOptimasi->isEmpty() && !empty($hasil->data_perhitungan['nilai_optimasi'])) {
-                        $sortedNilaiOptimasi = collect($hasil->data_perhitungan['nilai_optimasi'])
-                            ->map(function ($nilai, $alternatifId) {
-                                $alternatif = \App\Models\Alternatif::find($alternatifId);
-                                return [
-                                    'alternatif_id' => $alternatifId,
-                                    'kode' => $alternatif ? $alternatif->kode : 'A' . $alternatifId,
-                                    'nama' => $alternatif ? $alternatif->nama : 'Alternatif ' . $alternatifId,
-                                    'nilai' => $nilai
-                                ];
-                            })
-                            ->filter(function($item) {
-                                return !empty($item['kode']) && !empty($item['nama']);
-                            })
-                            ->sortBy(function($item) {
-                                if (preg_match('/^([A-Za-z]+)(\d+)$/', $item['kode'], $matches)) {
-                                    return $matches[1] . sprintf('%03d', (int)$matches[2]);
-                                }
-                                return $item['kode'];
-                            });
-                    }
+                    $sortedNilaiOptimasi = $rankingData->sortBy(function($item) {
+                        // Ekstrak angka dari kode untuk sorting numerik yang benar
+                        preg_match('/\d+$/', $item['kode'], $matches);
+                        return (int) ($matches[0] ?? 0);
+                    })->values();
                 @endphp
 
                 @if($sortedNilaiOptimasi->count() > 0)
@@ -762,18 +690,16 @@
                                 <strong>{{ $item['nama'] }}</strong>
                             </td>
                             <td>
-                                <span class="value-display">{{ number_format($item['nilai'], 5) }}</span>
+                                <span class="value-display">{{ number_format($item['nilai_optimasi'], 5) }}</span>
                             </td>
                         </tr>
                     @endforeach
                 @else
-                    <!-- Fallback terakhir: Tampilkan pesan jika tidak ada data -->
                     <tr>
                         <td colspan="3" class="text-center" style="padding: 2rem;">
                             <div style="color: #6b7280;">
                                 <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
                                 <h6>Data Nilai Optimasi Tidak Tersedia</h6>
-                                <p class="mb-0">Silakan periksa kembali data perhitungan atau hubungi administrator.</p>
                             </div>
                         </td>
                     </tr>

@@ -20,8 +20,8 @@ class UserSeeder extends Seeder
         if (!$adminExists) {
             DB::table('users')->insert([
                 'name' => 'Administrator',
-                'email' => 'adminmoora2@moora.com',
-                'password' => Hash::make('ppblmoora2'),
+                'email' => 'adminmoora2@yelena.com',
+                'password' => Hash::make('@Yelenaadmin30'),
                 'role' => 'admin',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -34,8 +34,8 @@ class UserSeeder extends Seeder
         if (!$userExists) {
             DB::table('users')->insert([
                 'name' => 'User',
-                'email' => 'kelompok2@moora.com',
-                'password' => Hash::make('moorakelompok2'),
+                'email' => 'kelompok2@yelena.com',
+                'password' => Hash::make('@Yelenamoorauser30'),
                 'role' => 'user',
                 'created_at' => now(),
                 'updated_at' => now(),

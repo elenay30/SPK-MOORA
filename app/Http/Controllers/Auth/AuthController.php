@@ -246,7 +246,8 @@ class AuthController extends Controller
             'timestamp' => now()
         ]);
 
-        return redirect()->route('login')->with('success', 'Anda telah berhasil logout.');
+        // UBAH: Redirect ke welcome instead of login setelah logout
+        return redirect()->route('welcome')->with('success', 'Anda telah berhasil logout.');
     }
 
     private function redirectBasedOnRole()

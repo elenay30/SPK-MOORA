@@ -61,16 +61,8 @@ class SubKriteriaSeeder extends Seeder
             ['keterangan' => 'Buruk', 'nilai' => 1],
         ]);
 
-        // Masa Kerja (C7) - nilai sesuai dengan tahun
-        $this->createSubKriteriasForKriteria(7, [
-            ['keterangan' => '7 Tahun', 'nilai' => 7],
-            ['keterangan' => '6 Tahun', 'nilai' => 6],
-            ['keterangan' => '5 Tahun', 'nilai' => 5],
-            ['keterangan' => '4 Tahun', 'nilai' => 4],
-            ['keterangan' => '3 Tahun', 'nilai' => 3],
-            ['keterangan' => '2 Tahun', 'nilai' => 2],
-            ['keterangan' => '1 Tahun', 'nilai' => 1],
-        ]);
+        // Masa Kerja (C7) - skip karena input manual, bukan dropdown
+        // C7 akan di-input langsung sebagai tahun (misal: 1, 4, 18, 22, dst)
 
         // Produktifitas (C8)
         $this->createSubKriteriasForKriteria(8, [
